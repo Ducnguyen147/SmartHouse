@@ -11,12 +11,10 @@ import jakarta.persistence.Table;
 @Table(name = "rooms") 
 public class Room {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String name;
 
-    // Constructors (No-args and All-args)
     public Room() {}
 
     public Room(String name) {
