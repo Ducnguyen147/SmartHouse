@@ -4,8 +4,10 @@
 
 - **Java version**: Version 21.
 - **Database**: Download PostgreSQL to your local computer.
-- **Create DB**: Create database called `smart_house` in your local db. `createdb smart_house`
-- **Create User**: `createuser -s group2`
+- **Create DB**: Create database called `smart_house` in your local db. 
+    - `createdb smart_house`
+- **Create User**: 
+    - `createuser -s group2`
 - **Create Password**:
     - `psql postgres`
     - `ALTER USER group2 WITH PASSWORD 'password';`
