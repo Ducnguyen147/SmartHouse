@@ -1,10 +1,16 @@
 package com.project.smarthouse.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -12,8 +18,13 @@ import jakarta.persistence.Table;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long roomId;
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Device> devices = new HashSet<>();
     private String name;
+    private String description;
+    private int brightness;
+    private int occupancy;
 
     public Room() {}
 
@@ -22,12 +33,12 @@ public class Room {
     }
 
     // Getters and Setters 
-    public Long getId() {
-        return id;
+    public Long getRoomId() {
+        return roomId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 
     public String getName() {
@@ -36,5 +47,29 @@ public class Room {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getBrightness() {
+        return brightness;
+    }
+
+    public void setBrightness(int brightness) {
+        this.brightness = brightness;
+    }
+
+    public int getOccupancy() {
+        return occupancy;
+    }
+
+    public void setOccupancy(int occupancy) {
+        this.occupancy = occupancy;
     }
 }
