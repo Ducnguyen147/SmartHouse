@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
-    
+    Optional<Device> findByType(String type);
+    Optional<Device> findByRoomAndType(Room room, String type);
 }

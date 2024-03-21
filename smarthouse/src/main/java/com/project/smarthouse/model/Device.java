@@ -16,6 +16,7 @@ public class Device {
     private Room room;
     private String type;
     private Boolean status;
+    private Integer numLevel;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "device", fetch = FetchType.LAZY)
     private Action action;
@@ -67,7 +68,15 @@ public class Device {
     public void setStatus(Boolean status) {
         this.status = status;
     }
-
+    
+    public Integer getNumLevel() {
+        return numLevel;
+    }
+    
+    public void setNumLevel(Integer numLevel) {
+        this.numLevel = numLevel;
+    }
+    
     public Set<Event> getEvents() {
         return events;
     }
