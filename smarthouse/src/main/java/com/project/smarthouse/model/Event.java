@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,8 +18,10 @@ public class Event {
     private Timestamp timestamp;
     private String value;
 
-    @ManyToMany(mappedBy = "events")
-    private Set<Device> devices = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "device_id", nullable = false)
+    @JsonBackReference
+    private Device device;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "actionId")
@@ -61,5 +65,13 @@ public class Event {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Device getDevice() {
+        return device;
+    }
+
+    public void setDevice(Device device) {
+        this.device = device;
     }
 }

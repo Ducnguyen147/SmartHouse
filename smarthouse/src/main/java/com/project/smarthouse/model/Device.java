@@ -1,7 +1,11 @@
 package com.project.smarthouse.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 
@@ -13,6 +17,7 @@ public class Device {
     private Long deviceId;
     @ManyToOne
     @JoinColumn(name = "roomId", nullable = false)
+    @JsonBackReference
     private Room room;
     private String type;
     private Boolean status;
@@ -21,13 +26,9 @@ public class Device {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "device", fetch = FetchType.LAZY)
     private Action action;
 
-    @ManyToMany
-    @JoinTable(
-        name = "device_event",
-        joinColumns = @JoinColumn(name = "deviceID"),
-        inverseJoinColumns = @JoinColumn(name = "eventID")
-    )
-    private Set<Event> events = new HashSet<>();
+    @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Event> events;
 
     public Device() {}
 
@@ -77,11 +78,11 @@ public class Device {
         this.numLevel = numLevel;
     }
     
-    public Set<Event> getEvents() {
+    public List<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(Set<Event> events) {
+    public void setEvents(List<Event> events) {
         this.events = events;
     }
 }

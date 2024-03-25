@@ -1,7 +1,11 @@
 package com.project.smarthouse.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,7 +24,8 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long roomId;
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Device> devices = new HashSet<>();
+    @JsonManagedReference
+    private List<Device> devices = new ArrayList<>();
     private String name;
     private String description;
     private int brightness;
@@ -39,6 +44,14 @@ public class Room {
 
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
+    }
+
+    public List<Device> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(ArrayList<Device> devices) {
+        this.devices = devices;
     }
 
     public String getName() {
