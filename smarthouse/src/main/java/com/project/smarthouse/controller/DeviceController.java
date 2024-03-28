@@ -4,6 +4,7 @@ import com.project.smarthouse.model.Device;
 import com.project.smarthouse.model.Event;
 import com.project.smarthouse.model.Room;
 import com.project.smarthouse.service.DeviceService;
+import com.project.smarthouse.service.ActionService;
 import com.project.smarthouse.repository.DeviceRepository;
 import com.project.smarthouse.repository.EventRepository;
 import com.project.smarthouse.repository.RoomRepository;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 public class DeviceController {
     @Autowired
     private DeviceService deviceService;
+
+    @Autowired
+    private ActionService actionService;
 
     @Autowired
     private DeviceRepository deviceRepository;
@@ -47,6 +51,8 @@ public class DeviceController {
         device.setRoom(room);
         event.setDevice(device);
         Event savedEvent = eventRepository.save(event);
+
+        actionService.evaluateSensorDataAndAct(deviceId);
 
         return ResponseEntity.ok(savedEvent);
     }

@@ -30,4 +30,18 @@ public class RoomController {
 
         return ResponseEntity.ok(savedRoom);
     }
+
+    @PutMapping("/{roomId}")
+    public ResponseEntity<Room> updateRoom(@PathVariable Long roomId, @RequestBody Room roomDetails) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found with id " + roomId));
+
+        room.setName(roomDetails.getName());
+        room.setDescription(roomDetails.getDescription());
+        room.setBrightness(roomDetails.getBrightness());
+        room.setOccupancy(roomDetails.getOccupancy());
+
+        final Room updatedRoom = roomRepository.save(room);
+        return ResponseEntity.ok(updatedRoom);
+    }
 }
