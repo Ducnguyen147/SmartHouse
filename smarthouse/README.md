@@ -49,7 +49,7 @@
 
 ### Events
 - **Create Event**: `[POST] http://localhost:8080/api/devices/[deviceId]/events`
-- **Light Bulp**:
+- **Light Bulb**:
 {
     "eventType": "lightDetected",
     "timestamp": "2024-03-26T14:30:45",
@@ -65,3 +65,6 @@
     "timestamp": "2024-03-26T19:35:45",
     "value": "true"
 }
+
+### Actions
+- Actions are autocreated based on the events.
