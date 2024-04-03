@@ -22,7 +22,7 @@
 ## API
 ### Room & Device
 - **Create Room & Device**: `[POST] http://localhost:8080/api/rooms`
-- **Example**:
+- **Kitchen**:
 {
     "name": "Kitchen",
     "description": "50m2 kitchen space with modern equipments.",
@@ -49,7 +49,7 @@
 
 ### Events
 - **Create Event**: `[POST] http://localhost:8080/api/devices/[deviceId]/events`
-- **Example**:
+- **Light Bulp**:
 {
     "eventType": "lightDetected",
     "timestamp": "2024-03-26T14:30:45",
