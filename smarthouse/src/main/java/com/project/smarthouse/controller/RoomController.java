@@ -4,6 +4,7 @@ import com.project.smarthouse.model.Device;
 import com.project.smarthouse.model.Room;
 import com.project.smarthouse.repository.RoomRepository;
 import com.project.smarthouse.repository.DeviceRepository;
+import com.project.smarthouse.service.ActionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,9 @@ public class RoomController {
 
     @Autowired
     private DeviceRepository deviceRepository;
+
+    @Autowired
+    private ActionService actionService;
 
     @PostMapping
     public ResponseEntity<Room> createRoom(@RequestBody Room room) {
@@ -42,6 +46,9 @@ public class RoomController {
         room.setOccupancy(roomDetails.getOccupancy());
 
         final Room updatedRoom = roomRepository.save(room);
+
+        actionService.evaluateSensorDataAndAct(roomId);
+
         return ResponseEntity.ok(updatedRoom);
     }
 }
