@@ -4,6 +4,7 @@ import com.project.smarthouse.model.Action;
 import com.project.smarthouse.model.Device;
 import com.project.smarthouse.model.Event;
 import com.project.smarthouse.model.Room;
+import com.project.smarthouse.repository.RoomRepository;
 import com.project.smarthouse.repository.ActionRepository;
 import com.project.smarthouse.repository.DeviceRepository;
 import com.project.smarthouse.repository.EventRepository;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Service;
 public class ActionService {
 
     @Autowired
+    private RoomRepository roomRepository;
+
+    @Autowired
     private DeviceRepository deviceRepository;
     
     @Autowired
@@ -27,77 +31,80 @@ public class ActionService {
     @Autowired
     private EventRepository eventRepository;
 
-    public void evaluateSensorDataAndAct(Long deviceId) {
-        Device device = deviceRepository.findById(deviceId)
-                .orElseThrow(() -> new RuntimeException("Device not found"));
-        Room room  = device.getRoom();
+    public void evaluateSensorDataAndAct(Long roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+        Device occDevice = room.getDevices().stream()
+                .filter(d -> "OccupancySensor".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("OccupancySensor not found"));
+        occDevice.setStatus(true);
+
+        Device brDevice = room.getDevices().stream()
+                .filter(d -> "BrightnessSensor".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("BrightnessSensor not found"));
+        brDevice.setStatus(true);
+
         Device lightBulb = room.getDevices().stream()
                 .filter(d -> "LightBulb".equals(d.getType()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("LightBulb not found"));
-        if ("BrightnessSensor".equals(device.getType()) || "OccupancySensor".equals(device.getType())) {
-            device.setStatus(true);
-            int brightness = getLatestBrightness(device.getRoom().getRoomId());
-            int occupancy = getLatestOccupancy(device.getRoom().getRoomId());
-
-            boolean lightStatus = shouldLightBeOn(brightness, occupancy);
-            Action action = actionRepository.findByDevice_DeviceId(deviceId)
-            .orElse(new Action());
         
-            action.setDevice(device);
+        int brightness = getLatestBrightness(room);
+        Event brEvent = setEvent(brDevice.getDeviceId(), brDevice, room);
+        
+        int occupancy = getLatestOccupancy(room);
+        Event occEvent = setEvent(occDevice.getDeviceId(), occDevice, room);
 
-            action.setActionType(lightStatus ? "lightOn" : "lightOff");
-            action.setStatus("completed");
-            action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        boolean lightStatus = shouldLightBeOn(brightness, occupancy);
+        lightBulb.setStatus(lightStatus);
 
-            actionRepository.save(action);
+        // Action triggered
+        Action action = actionRepository.findByDevice_DeviceId(lightBulb.getDeviceId())
+        .orElse(new Action());
+    
+        action.setDevice(lightBulb);
 
-            lightBulb.setStatus(lightStatus);
-            deviceRepository.save(device);
-        } else if ("LightBulb".equals(device.getType())) {
-            List<Event> events = eventRepository.findAllByDevice_Room_RoomIdAndEventType(room.getRoomId(), "switchLight");
-            boolean lightStatus = events.stream()
-                        .max(Comparator.comparing(Event::getTimestamp))
-                        .map(event -> {        
-                            String lightBool = event.getValue();
-                            if ("true".equals(lightBool)) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        })
-                        .orElse(false);
-            device.setStatus(lightStatus);
-            deviceRepository.save(device);                 
+        action.setActionType(lightStatus ? "lightOn" : "lightOff");
+        action.setStatus("completed");
+        action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+
+        actionRepository.save(action);
+
+        Event lightEvent = setEvent(lightBulb.getDeviceId(), lightBulb, room);
+
+        lightEvent.setValue(lightStatus ? "true" : "false");
+        eventRepository.save(lightEvent);
+               
+    }
+    
+
+    private Event setEvent(Long deviceId, Device device, Room room) {
+        Event event = eventRepository.findByDevice_DeviceId(deviceId)
+        .orElse(new Event());
+        event.setDevice(device);
+        if (device.getType().equals("OccupancySensor")) {
+            event.setEventType("occupancyDetected");
+            event.setValue(String.valueOf(room.getOccupancy()));
+        } else if (device.getType().equals("BrightnessSensor")) {
+            event.setEventType("lightDetected");
+            event.setValue(String.valueOf(room.getBrightness()));
+        } else if (device.getType().equals("LightBulb")) {
+            event.setEventType("switchLight");
         }
+        event.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        eventRepository.save(event);
+
+        return event;
     }
 
-    private int getLatestBrightness(Long roomId) {
-        List<Event> events = eventRepository.findAllByDevice_Room_RoomIdAndEventType(roomId, "lightDetected");
-        return events.stream()
-                    .max(Comparator.comparing(Event::getTimestamp))
-                    .map(event -> {        
-                        int brightness = Integer.parseInt(event.getValue());
-                        Device device = event.getDevice();
-                        Room room = device.getRoom();
-                        room.setBrightness(brightness);
-                        return brightness;
-                    })
-                    .orElse(0);
+    private int getLatestBrightness(Room room) {
+        return room.getBrightness();
     }
 
-    private int getLatestOccupancy(Long roomId) {
-        List<Event> events = eventRepository.findAllByDevice_Room_RoomIdAndEventType(roomId, "peopleDetected");
-        return events.stream()
-                    .max(Comparator.comparing(Event::getTimestamp))
-                    .map(event -> {        
-                        int people_amount = Integer.parseInt(event.getValue());
-                        Device device = event.getDevice();
-                        Room room = device.getRoom();
-                        room.setOccupancy(people_amount);
-                        return people_amount;
-                    })
-                    .orElse(0); 
+    private int getLatestOccupancy(Room room) {
+        return room.getOccupancy();
     }
 
     private boolean shouldLightBeOn(int brightness, int occupancy) {

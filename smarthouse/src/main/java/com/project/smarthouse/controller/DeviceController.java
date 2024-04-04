@@ -52,7 +52,7 @@ public class DeviceController {
         event.setDevice(device);
         Event savedEvent = eventRepository.save(event);
 
-        actionService.evaluateSensorDataAndAct(deviceId);
+        //actionService.evaluateSensorDataAndAct(deviceId);
 
         return ResponseEntity.ok(savedEvent);
     }
