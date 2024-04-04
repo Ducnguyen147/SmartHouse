@@ -30,6 +30,7 @@ public class Room {
     private String description;
     private int brightness;
     private int occupancy;
+    private float oxygenLevel; 
 
     public Room() {}
 
@@ -84,5 +85,13 @@ public class Room {
 
     public void setOccupancy(int occupancy) {
         this.occupancy = occupancy;
+    }
+
+    public float getOxygenLevel() {
+        return oxygenLevel;
+    }
+
+    public void setOxygenLevel(float oxygenLevel) {
+        this.oxygenLevel = oxygenLevel;
     }
 }

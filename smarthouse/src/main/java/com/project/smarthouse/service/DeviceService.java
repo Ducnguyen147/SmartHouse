@@ -25,21 +25,6 @@ public class DeviceService {
         return deviceRepository.findById(id);
     }
 
-    public ResponseEntity<String> handleOccupancySensor(boolean isOccupied, Long roomId) {
-        List<Device> devices = roomRepository.findById(roomId)
-                            .map(Room::getDevices)
-                            .orElse(new ArrayList<>());
-
-        for (Device device : devices) {
-            if ("light".equals(device.getType())) {
-                device.setStatus(isOccupied);
-                deviceRepository.save(device);
-            }
-        }
-
-        return ResponseEntity.ok("Light in room " + roomId + " turned " + (isOccupied ? "on" : "off"));
-    }
-
     public Optional<Event> updateEvent(Long deviceId, Long eventId, Event updatedEvent) {
         return deviceRepository.findById(deviceId)
                 .flatMap(device -> {
