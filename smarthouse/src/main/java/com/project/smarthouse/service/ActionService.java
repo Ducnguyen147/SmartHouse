@@ -159,4 +159,27 @@ public class ActionService {
         if (oxygenLevel < 21) return true;
         return false;
     }
+    public void controlRoomVentilationSystem(Long roomId, boolean turnOn, int fanSpeed) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+   
+       
+        Device ventilationSystem = room.getDevices().stream()
+                .filter(d -> "VentilationSystem".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("VentilationSystem not found in room with ID: " + roomId));
+   
+       
+        ventilationSystem.setStatus(turnOn);
+        ventilationSystem.setNumLevel(fanSpeed);
+        deviceRepository.save(ventilationSystem);
+   
+       
+        Action action = new Action();
+        action.setDevice(ventilationSystem);
+        action.setActionType(turnOn ? "VentilationOn" : "VentilationOff");
+        action.setStatus("completed");
+        action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        actionRepository.save(action);
+    }
 }

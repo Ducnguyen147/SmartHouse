@@ -52,4 +52,15 @@ public class RoomController {
 
         return ResponseEntity.ok(updatedRoom);
     }
+    @PutMapping("/{roomId}/ventilation")
+    public ResponseEntity<?> controlVentilation(@PathVariable Long roomId,
+                                                @RequestParam boolean turnOn,
+                                                @RequestParam int fanSpeed) {
+        try {
+            actionService.controlRoomVentilationSystem(roomId, turnOn, fanSpeed);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
