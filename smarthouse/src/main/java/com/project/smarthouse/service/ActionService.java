@@ -150,9 +150,9 @@ public class ActionService {
     }
 
     private boolean shouldLightBeOn(int brightness, int occupancy) {
-        if (brightness > 70) return false;
-        if (brightness <= 70 && occupancy == 0) return false;
-        return brightness <= 70 && occupancy > 0;
+        if (brightness > 90) return false;
+        if (brightness <= 90 && occupancy == 0) return false;
+        return brightness <= 90 && occupancy > 0;
     }
 
     private boolean shouldWindowOpen(float oxygenLevel) {
