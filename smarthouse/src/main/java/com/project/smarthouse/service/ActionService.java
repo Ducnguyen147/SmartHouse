@@ -12,6 +12,7 @@ import com.project.smarthouse.repository.EventRepository;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ResourceBundle.Control;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,8 @@ public class ActionService {
                 .orElseThrow(() -> new RuntimeException("Room not found"));
         lightLogic(room);  
         windowLogic(room);  
+        acHeaterLogic(room);
+        controlRoomVentilationSystem(room);
     }
 
     private Event setEvent(Long deviceId, Device device, Room room) {
@@ -58,6 +61,12 @@ public class ActionService {
         } else if (device.getType().equals("TemperatureSensor")) {
             event.setEventType("detectTemperatureLevel");
             event.setValue(String.valueOf(room.getTemperature()));
+        } else if (device.getType().equals("AC")) {
+            event.setEventType("changeACStatus");
+        } else if (device.getType().equals("Heater")) {
+            event.setEventType("changeHeaterStatus");
+        } else if (device.getType().equals("VentilationSystem")) {
+            event.setEventType("switchVentilationFan");
         }
         event.setTimestamp(new Timestamp(System.currentTimeMillis()));
         eventRepository.save(event);
@@ -162,29 +171,41 @@ public class ActionService {
         if (oxygenLevel < 21) return true;
         return false;
     }
-    public void controlRoomVentilationSystem(Long roomId, boolean turnOn, int fanSpeed) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-   
+    public void controlRoomVentilationSystem(Room room) {
        
         Device ventilationSystem = room.getDevices().stream()
                 .filter(d -> "VentilationSystem".equals(d.getType()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("VentilationSystem not found in room with ID: " + roomId));
-   
+                .orElseThrow(() -> new RuntimeException("VentilationSystem not found."));
+        Event ventEvent = setEvent(ventilationSystem.getDeviceId(), ventilationSystem, room);
+        Device stove = room.getDevices().stream()
+                .filter(d -> "Stove".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Stove not found."));
+        Event stoveEvent = setEvent(stove.getDeviceId(), stove, room);
+
+        controlVentilation(room, stove, ventilationSystem);   
        
-        ventilationSystem.setStatus(turnOn);
-        ventilationSystem.setNumLevel(fanSpeed);
-        deviceRepository.save(ventilationSystem);
-   
-       
-        Action action = new Action();
+        Action action = actionRepository.findByDevice_DeviceId(ventilationSystem.getDeviceId())
+        .orElse(new Action());
         action.setDevice(ventilationSystem);
-        action.setActionType(turnOn ? "VentilationOn" : "VentilationOff");
+        action.setActionType(ventilationSystem.getStatus() ? "VentilationOn" : "VentilationOff");
         action.setStatus("completed");
         action.setTimestamp(new Timestamp(System.currentTimeMillis()));
         actionRepository.save(action);
     }
+
+    public void controlVentilation(Room room, Device stove, Device vent) { 
+        
+        if (stove.getStatus()) {
+            vent.setStatus(true);
+        } else {
+            vent.setStatus(false);
+        }
+        deviceRepository.save(stove);
+        deviceRepository.save(vent);
+    }
+
     public void acHeaterLogic(Room room) {
         Device temperatureSensor = room.getDevices().stream()
                 .filter(d -> "TemperatureSensor".equals(d.getType()))
@@ -205,6 +226,8 @@ public class ActionService {
                 .orElseThrow(() -> new RuntimeException("Heater not found"));
     
         controlACAndHeater(room, ac, heater, temperature);
+        Event acEvent = setEvent(ac.getDeviceId(), ac, room);
+        Event oxyEvent = setEvent(heater.getDeviceId(), heater, room);
     
         Action acAction = actionRepository.findByDevice_DeviceId(ac.getDeviceId())
                 .orElse(new Action());

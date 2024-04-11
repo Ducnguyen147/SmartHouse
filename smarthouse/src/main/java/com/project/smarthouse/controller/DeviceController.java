@@ -57,11 +57,20 @@ public class DeviceController {
         return ResponseEntity.ok(savedEvent);
     }
 
-    @PutMapping("/{deviceId}/events/{eventId}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long deviceId, @PathVariable Long eventId, @RequestBody Event updatedEvent) {
-        return deviceService.updateEvent(deviceId, eventId, updatedEvent)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @PutMapping("/{deviceId}")
+    public ResponseEntity<Device> updateDevice(@PathVariable Long deviceId, @RequestBody Device deviceDetails) {
+        Device device = deviceRepository.findById(deviceId)
+                .orElseThrow(() -> new RuntimeException("Device not found"));
+
+        device.setType(deviceDetails.getType());
+        device.setStatus(deviceDetails.getStatus());
+        device.setNumLevel(deviceDetails.getNumLevel());
+        
+        final Device updatedDevice = deviceRepository.save(device);
+
+        actionService.evaluateSensorDataAndAct(device.getRoom().getRoomId());
+
+        return ResponseEntity.ok(updatedDevice);
     }
 
 }
