@@ -22,7 +22,7 @@
 ## API
 ### Room & Device
 - **Create Room & Device**: `[POST] http://localhost:8080/api/rooms`
-- **Kitchen**:
+- Creation
 {
     "name": "Kitchen",
     "description": "50m2 kitchen space with modern equipments.",
@@ -47,24 +47,15 @@
     ]
 }
 
-### Events
-- **Create Event**: `[POST] http://localhost:8080/api/devices/[deviceId]/events`
-- **Light Bulb**:
+- **Update Room**: `[PUT] http://localhost:8080/api/rooms/1`
+- Update
 {
-    "eventType": "lightDetected",
-    "timestamp": "2024-03-26T14:30:45",
-    "value": "60"
-},
-{
-    "eventType": "peopleDetected",
-    "timestamp": "2024-03-26T15:31:45",
-    "value": "2"
-},
-{
-    "eventType": "switchLight",
-    "timestamp": "2024-03-26T19:35:45",
-    "value": "true"
+    "name": "Kitchen",
+    "description": "50m2 kitchen space with modern equipments.",
+    "brightness": 40,
+    "occupancy": 0
 }
 
-### Actions
-- Actions are autocreated based on the events.
+### Events && Actions
+- Events and Actions are automatically adjusted based on the room properties (After changing room's parameters like occupancy, temperature, etc.).
+

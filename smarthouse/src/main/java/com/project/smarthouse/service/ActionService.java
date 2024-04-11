@@ -55,6 +55,9 @@ public class ActionService {
             event.setEventType("switchLight");
         } else if (device.getType().equals("Window")) {
             event.setEventType("changeWindowStatus");
+        } else if (device.getType().equals("TemperatureSensor")) {
+            event.setEventType("detectTemperatureLevel");
+            event.setValue(String.valueOf(room.getTemperature()));
         }
         event.setTimestamp(new Timestamp(System.currentTimeMillis()));
         eventRepository.save(event);
@@ -159,4 +162,87 @@ public class ActionService {
         if (oxygenLevel < 21) return true;
         return false;
     }
+    public void controlRoomVentilationSystem(Long roomId, boolean turnOn, int fanSpeed) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+   
+       
+        Device ventilationSystem = room.getDevices().stream()
+                .filter(d -> "VentilationSystem".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("VentilationSystem not found in room with ID: " + roomId));
+   
+       
+        ventilationSystem.setStatus(turnOn);
+        ventilationSystem.setNumLevel(fanSpeed);
+        deviceRepository.save(ventilationSystem);
+   
+       
+        Action action = new Action();
+        action.setDevice(ventilationSystem);
+        action.setActionType(turnOn ? "VentilationOn" : "VentilationOff");
+        action.setStatus("completed");
+        action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        actionRepository.save(action);
+    }
+    public void acHeaterLogic(Room room) {
+        Device temperatureSensor = room.getDevices().stream()
+                .filter(d -> "TemperatureSensor".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("TemperatureSensor not found"));
+    
+        float temperature = getLatestTemperature(room);
+        Event temperatureEvent = setEvent(temperatureSensor.getDeviceId(), temperatureSensor, room);
+    
+        Device ac = room.getDevices().stream()
+                .filter(d -> "AC".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("AC not found"));
+    
+        Device heater = room.getDevices().stream()
+                .filter(d -> "Heater".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Heater not found"));
+    
+        controlACAndHeater(room, ac, heater, temperature);
+    
+        Action acAction = actionRepository.findByDevice_DeviceId(ac.getDeviceId())
+                .orElse(new Action());
+        acAction.setDevice(ac);
+        acAction.setActionType(ac.getStatus() ? "ACOn" : "ACOff");
+        acAction.setStatus("completed");
+        acAction.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        actionRepository.save(acAction);
+    
+        Action heaterAction = actionRepository.findByDevice_DeviceId(heater.getDeviceId())
+                .orElse(new Action());
+        heaterAction.setDevice(heater);
+        heaterAction.setActionType(heater.getStatus() ? "HeaterOn" : "HeaterOff");
+        heaterAction.setStatus("completed");
+        heaterAction.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        actionRepository.save(heaterAction);
+    }
+    
+    private float getLatestTemperature(Room room) {
+        return room.getTemperature();
+    }
+    
+    public void controlACAndHeater(Room room, Device ac, Device heater, float temperature) {
+        float heaterThreshold = 22; 
+        float acThreshold = 27;     
+    
+        if (temperature < heaterThreshold) {
+            ac.setStatus(false);
+            heater.setStatus(true);
+        } else if (temperature > acThreshold) {
+            ac.setStatus(true);
+            heater.setStatus(false);
+        } else {
+            ac.setStatus(false);
+            heater.setStatus(false);
+        }
+        deviceRepository.save(ac);
+        deviceRepository.save(heater);
+    }
+    
 }
