@@ -45,6 +45,7 @@ public class RoomController {
         room.setBrightness(roomDetails.getBrightness());
         room.setOccupancy(roomDetails.getOccupancy());
         room.setOxygenLevel(roomDetails.getOxygenLevel());
+        room.setTemperature(roomDetails.getTemperature());
 
         final Room updatedRoom = roomRepository.save(room);
 
