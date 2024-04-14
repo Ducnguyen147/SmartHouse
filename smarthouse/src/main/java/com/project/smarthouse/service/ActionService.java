@@ -35,7 +35,10 @@ public class ActionService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
         lightLogic(room);  
-        windowLogic(room);  
+        windowLogic(room);
+        acHeaterLogic(room);
+        doorLogic(room);
+        plugLogic(room);  
     }
 
     private Event setEvent(Long deviceId, Device device, Room room) {
@@ -58,6 +61,14 @@ public class ActionService {
         } else if (device.getType().equals("TemperatureSensor")) {
             event.setEventType("detectTemperatureLevel");
             event.setValue(String.valueOf(room.getTemperature()));
+        } else if (device.getType().equals("AC")) {
+            event.setEventType("changeAcStatus");
+        } else if (device.getType().equals("Heater")) {
+            event.setEventType("changeHeaterStatus");
+        } else if (device.getType().equals("DoorLock")) {
+            event.setEventType("changeDoorLockStatus");
+        } else if (device.getType().equals("ElectricPlug")) {
+            event.setEventType("changeElectricPlugStatus");
         }
         event.setTimestamp(new Timestamp(System.currentTimeMillis()));
         eventRepository.save(event);
@@ -244,5 +255,90 @@ public class ActionService {
         deviceRepository.save(ac);
         deviceRepository.save(heater);
     }
+
+    private void doorLogic(Room room) {
+        Device occDevice = room.getDevices().stream()
+                .filter(d -> "OccupancySensor".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("OccupancySensor not found"));
+        occDevice.setStatus(true);
+        int totalOccupancy = calculateTotalOccupancy();
+        Room livingRoom = roomRepository.findByRoomName("Living room");
+        if (livingRoom != null) {
+            Device doorLock = livingRoom.getDevices().stream()
+                    .filter(d -> "DoorLock".equals(d.getType()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("DoorLock not found"));
+
+            boolean doorLockStatus = shouldDoorBeLocked(totalOccupancy);
+            Event doorLockEvent = setEvent(doorLock.getDeviceId(), doorLock, livingRoom);
+
+            Action action = actionRepository.findByDevice_DeviceId(doorLock.getDeviceId())
+                    .orElse(new Action());
+            action.setDevice(doorLock);
+            action.setActionType(doorLockStatus ? "doorLocked" : "doorUnlocked");
+            action.setStatus("completed");
+            action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            actionRepository.save(action);
+
+            Event lockEvent = setEvent(doorLock.getDeviceId(), doorLock, livingRoom);
+
+            lockEvent.setValue(doorLockStatus ? "true" : "false");
+            eventRepository.save(lockEvent);
+        }
+    }
+
+    private int calculateTotalOccupancy() {
+        int totalOccupancy = 0;
+        Iterable<Room> rooms = roomRepository.findAll();
+        for (Room currentRoom : rooms) {
+            totalOccupancy += currentRoom.getOccupancy();
+        }
+        return totalOccupancy;
+    }
+
+    private boolean shouldDoorBeLocked(int totalOccupancy) {
+        return totalOccupancy == 0;
+    }
+
+    private void plugLogic(Room room) {
+        Device occDevice = room.getDevices().stream()
+                .filter(d -> "OccupancySensor".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("OccupancySensor not found"));
+        occDevice.setStatus(true);
+                
+        Device electricPlug = room.getDevices().stream()
+                .filter(d -> "ElectricPlug".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("ElectricPlug not found"));
+        
+        int occupancy = getLatestOccupancy(room);
+        Event occEvent = setEvent(occDevice.getDeviceId(), occDevice, room);
+        
+        boolean electricPlugStatus = shouldPlugBeOn(occupancy);
+        electricPlug.setStatus(electricPlugStatus);
+
+        Action action = actionRepository.findByDevice_DeviceId(electricPlug.getDeviceId())
+                .orElse(new Action());
+        action.setDevice(electricPlug);
+        action.setActionType(electricPlugStatus ? "plugOn" : "plugOff");
+        action.setStatus("completed");
+        action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        actionRepository.save(action);
+        
+        Event plugEvent = setEvent(electricPlug.getDeviceId(), electricPlug, room);
+        plugEvent.setValue(electricPlugStatus ? "true" : "false");
+        eventRepository.save(plugEvent);
+    }
+
+    private int getLatestOccupancy(Room room) {
+        return room.getOccupancy();
+    }
+
+    private boolean shouldPlugBeOn(int occupancy) {
+        return occupancy > 0;
+    }
+
     
 }
