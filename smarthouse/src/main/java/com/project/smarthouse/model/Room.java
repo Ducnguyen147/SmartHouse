@@ -32,6 +32,7 @@ public class Room {
     private int occupancy;
     private float oxygenLevel;
     private float temperature; 
+    private boolean livingRoom;
 
     public Room() {}
 
@@ -101,5 +102,13 @@ public class Room {
     }
     public void setTemperature(float temperature) {
         this.temperature = temperature;
+    }
+
+    public boolean getLivingRoom() {
+        return livingRoom;
+    }
+
+    public void setLivingRoom(boolean livingRoom) {
+        this.livingRoom = livingRoom;
     }
 }
