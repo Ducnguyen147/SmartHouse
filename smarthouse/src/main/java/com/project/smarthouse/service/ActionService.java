@@ -12,6 +12,7 @@ import com.project.smarthouse.repository.EventRepository;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle.Control;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ public class ActionService {
         windowLogic(room);  
         acHeaterLogic(room);
         controlRoomVentilationSystem(room);
+        doorLogic(room);
+        plugLogic(room); 
     }
 
     private Event setEvent(Long deviceId, Device device, Room room) {
@@ -67,6 +70,10 @@ public class ActionService {
             event.setEventType("changeHeaterStatus");
         } else if (device.getType().equals("VentilationSystem")) {
             event.setEventType("switchVentilationFan");
+        } else if (device.getType().equals("DoorLock")) {
+            event.setEventType("changeDoorLockStatus");
+        } else if (device.getType().equals("ElectricPlug")) {
+            event.setEventType("changeElectricPlugStatus");
         }
         event.setTimestamp(new Timestamp(System.currentTimeMillis()));
         eventRepository.save(event);
@@ -149,6 +156,87 @@ public class ActionService {
         eventRepository.save(lightEvent);
     }
 
+    private void doorLogic(Room room) {
+        Device occDevice = room.getDevices().stream()
+                .filter(d -> "OccupancySensor".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("OccupancySensor not found"));
+        occDevice.setStatus(true);
+        int totalOccupancy = calculateTotalOccupancy();
+        Room livingRoom = roomRepository.findByName("Living room");
+        if (livingRoom != null) {
+            Device doorLock = livingRoom.getDevices().stream()
+                    .filter(d -> "DoorLock".equals(d.getType()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("DoorLock not found"));
+
+            boolean doorLockStatus = shouldDoorBeLocked(totalOccupancy);
+            doorLock.setStatus(doorLockStatus);
+            Event doorLockEvent = setEvent(doorLock.getDeviceId(), doorLock, livingRoom);
+
+            Action action = actionRepository.findByDevice_DeviceId(doorLock.getDeviceId())
+                    .orElse(new Action());
+            action.setDevice(doorLock);
+            action.setActionType(doorLockStatus ? "doorLocked" : "doorUnlocked");
+            action.setStatus("completed");
+            action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            actionRepository.save(action);
+
+            Event lockEvent = setEvent(doorLock.getDeviceId(), doorLock, livingRoom);
+
+            lockEvent.setValue(doorLockStatus ? "true" : "false");
+            eventRepository.save(lockEvent);
+        }
+    }
+
+    private void plugLogic(Room room) {
+        Device occDevice = room.getDevices().stream()
+                .filter(d -> "OccupancySensor".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("OccupancySensor not found"));
+        occDevice.setStatus(true);
+
+        Device electricPlug = room.getDevices().stream()
+                .filter(d -> "ElectricPlug".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("ElectricPlug not found"));
+
+        int occupancy = getLatestOccupancy(room);
+        Event occEvent = setEvent(occDevice.getDeviceId(), occDevice, room);
+
+        boolean electricPlugStatus = shouldPlugBeOn(occupancy);
+        electricPlug.setStatus(electricPlugStatus);
+
+        Action action = actionRepository.findByDevice_DeviceId(electricPlug.getDeviceId())
+                .orElse(new Action());
+        action.setDevice(electricPlug);
+        action.setActionType(electricPlugStatus ? "plugOn" : "plugOff");
+        action.setStatus("completed");
+        action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        actionRepository.save(action);
+
+        Event plugEvent = setEvent(electricPlug.getDeviceId(), electricPlug, room);
+        plugEvent.setValue(electricPlugStatus ? "true" : "false");
+        eventRepository.save(plugEvent);
+    }
+
+    private boolean shouldPlugBeOn(int occupancy) {
+        return occupancy > 0;
+    }
+
+    private boolean shouldDoorBeLocked(int totalOccupancy) {
+        return totalOccupancy == 0;
+    }
+
+    private int calculateTotalOccupancy() {
+        int totalOccupancy = 0;
+        Iterable<Room> rooms = roomRepository.findAll();
+        for (Room currentRoom : rooms) {
+            totalOccupancy += currentRoom.getOccupancy();
+        }
+        return totalOccupancy;
+    }
+
     private int getLatestBrightness(Room room) {
         return room.getBrightness();
     }
@@ -173,26 +261,29 @@ public class ActionService {
     }
     public void controlRoomVentilationSystem(Room room) {
        
-        Device ventilationSystem = room.getDevices().stream()
+        Optional<Device> ventilationSystemOptional = room.getDevices().stream()
                 .filter(d -> "VentilationSystem".equals(d.getType()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("VentilationSystem not found."));
-        Event ventEvent = setEvent(ventilationSystem.getDeviceId(), ventilationSystem, room);
-        Device stove = room.getDevices().stream()
-                .filter(d -> "Stove".equals(d.getType()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Stove not found."));
-        Event stoveEvent = setEvent(stove.getDeviceId(), stove, room);
+                .findFirst();
+            
+        if (ventilationSystemOptional.isPresent()) {
+            Device ventilationSystem = ventilationSystemOptional.get();
+            Event ventEvent = setEvent(ventilationSystem.getDeviceId(), ventilationSystem, room);
+            Device stove = room.getDevices().stream()
+                    .filter(d -> "Stove".equals(d.getType()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Stove not found."));
+            Event stoveEvent = setEvent(stove.getDeviceId(), stove, room);
 
-        controlVentilation(room, stove, ventilationSystem);   
-       
-        Action action = actionRepository.findByDevice_DeviceId(ventilationSystem.getDeviceId())
-        .orElse(new Action());
-        action.setDevice(ventilationSystem);
-        action.setActionType(ventilationSystem.getStatus() ? "VentilationOn" : "VentilationOff");
-        action.setStatus("completed");
-        action.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        actionRepository.save(action);
+            controlVentilation(room, stove, ventilationSystem);   
+        
+            Action action = actionRepository.findByDevice_DeviceId(ventilationSystem.getDeviceId())
+            .orElse(new Action());
+            action.setDevice(ventilationSystem);
+            action.setActionType(ventilationSystem.getStatus() ? "VentilationOn" : "VentilationOff");
+            action.setStatus("completed");
+            action.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            actionRepository.save(action);
+        }
     }
 
     public void controlVentilation(Room room, Device stove, Device vent) { 
@@ -224,8 +315,13 @@ public class ActionService {
                 .filter(d -> "Heater".equals(d.getType()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Heater not found"));
+
+        Device tempSensor = room.getDevices().stream()
+                .filter(d -> "TemperatureSensor".equals(d.getType()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("TemperatureSensor not found"));
     
-        controlACAndHeater(room, ac, heater, temperature);
+        controlACAndHeater(room, tempSensor, ac, heater, temperature);
         Event acEvent = setEvent(ac.getDeviceId(), ac, room);
         Event oxyEvent = setEvent(heater.getDeviceId(), heater, room);
     
@@ -250,14 +346,16 @@ public class ActionService {
         return room.getTemperature();
     }
     
-    public void controlACAndHeater(Room room, Device ac, Device heater, float temperature) {
+    public void controlACAndHeater(Room room, Device tempSensor, Device ac, Device heater, float temperature) {
         float heaterThreshold = 22; 
         float acThreshold = 27;     
     
         if (temperature < heaterThreshold) {
+            tempSensor.setStatus(true);
             ac.setStatus(false);
             heater.setStatus(true);
         } else if (temperature > acThreshold) {
+            tempSensor.setStatus(true);
             ac.setStatus(true);
             heater.setStatus(false);
         } else {
