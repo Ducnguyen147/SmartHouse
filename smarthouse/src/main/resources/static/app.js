@@ -4,7 +4,7 @@ const stompClient = new StompJs.Client({
 
 stompClient.onConnect = (frame) => {
     stompClient.subscribe('/topic/rooms', (message) => {
-        showResponse(JSON.parse(message.body));
+        showResponse(JSON.parse(JSON.stringify(message.body)));
     });
     setConnected(true);
     console.log('Connected: ' + frame);
@@ -28,7 +28,7 @@ function setConnected(connected) {
     else {
         $("#conversation").hide();
     }
-    $("#greetings").html("");
+    $("#responses").html("");
 }
 
 function connect() {
@@ -49,7 +49,8 @@ function sendName() {
     });
 }
 function  showResponse (message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+    // <pre class="prettyprint"><code class="language-json">...</code></pre>
+    $("#responses").append("<tr><td><code class='language-json'>" + message + "</code><hr></td></tr>");
 //     console  as well
     console.log(message);
 }

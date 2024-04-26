@@ -39,8 +39,6 @@ public class RoomController {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @PostMapping
-    @MessageMapping("/rooms")
-    @SendTo("/topic/rooms")
     public  ResponseEntity<Room> createRoom(@RequestBody Room room) {
         Room savedRoom = roomRepository.save(room);
         if (room.getDevices() != null) {
@@ -71,6 +69,7 @@ public class RoomController {
         final Room updatedRoom = roomRepository.save(room);
 
         actionService.evaluateSensorDataAndAct(roomId);
+        simpMessagingTemplate.convertAndSend("/topic/rooms", roomRepository.findAll());
 
         return ResponseEntity.ok(updatedRoom);
     }
