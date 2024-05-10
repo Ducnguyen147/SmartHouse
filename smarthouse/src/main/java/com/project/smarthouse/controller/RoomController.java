@@ -30,7 +30,13 @@ public class RoomController {
     private ActionService actionService;
     @GetMapping
     public ResponseEntity<Map<String, Object>> getRooms() {
-        return ResponseEntity.ok(Map.of("data", roomRepository.findAll()));
+        final  java.util.List<Room> rooms = roomRepository.findAll();
+        for (Room room : rooms) {
+            room.getDevices().sort((d1, d2) -> (int) (d1.getDeviceId() - d2.getDeviceId()));
+        }
+        rooms.sort((r1, r2) -> (int) (r1.getRoomId() - r2.getRoomId()));
+        return ResponseEntity.ok(Map.of("data", rooms));
+
     }
 
 //    notify topics
