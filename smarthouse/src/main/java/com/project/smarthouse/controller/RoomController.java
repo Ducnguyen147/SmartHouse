@@ -80,5 +80,6 @@ public class RoomController {
         for (Room room : rooms) {
             room.getDevices().sort((d1, d2) -> (int) (d1.getDeviceId() - d2.getDeviceId()));
         }
+        return rooms;
     }
 }
