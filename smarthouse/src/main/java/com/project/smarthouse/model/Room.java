@@ -1,5 +1,6 @@
 package com.project.smarthouse.model;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "rooms") 
@@ -33,6 +35,7 @@ public class Room {
     private float oxygenLevel;
     private float temperature; 
     private boolean livingRoom;
+
 
     public Room() {}
 
