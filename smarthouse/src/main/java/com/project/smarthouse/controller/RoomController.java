@@ -28,13 +28,12 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getRooms() {
-        final java.util.List<Room> rooms = roomRepository.findAll();
+       final java.util.List<Room> rooms= getSortedRooms();
+//       sort the devices by id
         for (Room room : rooms) {
             room.getDevices().sort((d1, d2) -> (int) (d1.getDeviceId() - d2.getDeviceId()));
         }
-        rooms.sort((r1, r2) -> (int) (r1.getRoomId() - r2.getRoomId()));
-        return ResponseEntity.ok(Map.of("data", rooms));
-
+        return ResponseEntity.ok(Map.of("rooms", rooms));
     }
 
     // notify topics
@@ -81,6 +80,7 @@ public class RoomController {
     }
 
     private java.util.List<Room> getSortedRooms() {
+
         return roomRepository.findAll(Sort.by(Sort.Direction.ASC, "roomId"));
     }
 }
