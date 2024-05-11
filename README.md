@@ -48,7 +48,7 @@ Here is the complete workflow of our Smart House system:
 - Store and manage data related to Rooms, Devices, Events, and Actions. Ensure scalability and efficient querying for real-time processing.
 - Interfaces with a PostgreSQL database to store and retrieve data on device states, user settings, and historical sensor data.
 - Architecture:
-  <img width="583" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/1cbe5621-32a5-49c2-ab8c-f912e38d73aa">
+  - <img width="583" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/1cbe5621-32a5-49c2-ab8c-f912e38d73aa">
 
 #### API Design
 
