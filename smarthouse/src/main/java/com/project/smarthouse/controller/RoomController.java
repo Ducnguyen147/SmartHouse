@@ -2,12 +2,16 @@ package com.project.smarthouse.controller;
 
 import com.project.smarthouse.model.Device;
 import com.project.smarthouse.model.Room;
-import com.project.smarthouse.repository.RoomRepository;
 import com.project.smarthouse.repository.DeviceRepository;
+import com.project.smarthouse.repository.RoomRepository;
 import com.project.smarthouse.service.ActionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -22,6 +26,16 @@ public class RoomController {
     @Autowired
     private ActionService actionService;
 
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getRooms() {
+        return ResponseEntity.ok(Map.of("rooms", getSortedRooms()));
+    }
+
+    // notify topics
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @PostMapping
     public ResponseEntity<Room> createRoom(@RequestBody Room room) {
         Room savedRoom = roomRepository.save(room);
@@ -31,7 +45,7 @@ public class RoomController {
                 deviceRepository.save(device);
             }
         }
-
+        publishToRoomsTopic();
         return ResponseEntity.ok(savedRoom);
     }
 
@@ -50,7 +64,22 @@ public class RoomController {
         final Room updatedRoom = roomRepository.save(room);
 
         actionService.evaluateSensorDataAndAct(roomId);
+        publishToRoomsTopic();
 
         return ResponseEntity.ok(updatedRoom);
+    }
+
+    private void publishToRoomsTopic() {
+        simpMessagingTemplate.convertAndSend("/topic/rooms", getSortedRooms());
+
+    }
+
+    private java.util.List<Room> getSortedRooms() {
+
+        final java.util.List<Room> rooms = roomRepository.findAll(Sort.by(Sort.Direction.ASC, "roomId"));
+        for (Room room : rooms) {
+            room.getDevices().sort((d1, d2) -> (int) (d1.getDeviceId() - d2.getDeviceId()));
+        }
+        return rooms;
     }
 }
