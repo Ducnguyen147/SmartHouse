@@ -9,6 +9,7 @@ The SmartHouse system further enriches the user experience by adding an external
 ## High-level architecture
 
 The SmartHouse system is architecturally divided into several key components, each responsible for different aspects of the system’s functionality. These components include the mobile UI, the backend services, the database, and the external simulator. The system is built on a microservices architecture to ensure scalability and resilience. Each service communicates through well-defined APIs, allowing for efficient data exchange and processing.
+<img width="850" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/f01eeeb2-fc0e-464d-ab4f-97f440d5db5d">
 
 ## Workflow
 
@@ -45,7 +46,9 @@ Here is the complete workflow of our Smart House system:
 #### Database Design
 
 - Store and manage data related to Rooms, Devices, Events, and Actions. Ensure scalability and efficient querying for real-time processing.
-- Interfaces with a PostgreSQL database to store and retrieve data on device states, user settings, and historical sensor data. 
+- Interfaces with a PostgreSQL database to store and retrieve data on device states, user settings, and historical sensor data.
+- Architecture:
+  <img width="583" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/1cbe5621-32a5-49c2-ab8c-f912e38d73aa">
 
 #### API Design
 
