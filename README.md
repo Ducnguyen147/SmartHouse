@@ -2,9 +2,9 @@
 
 ## Overview
 
-The SmartHouse system represents an innovative approach to home automation, leveraging the power of external simulator to create a seamless, interconnected environment. This system facilitates real-time monitoring and control over various home devices and sensors, providing a sophisticated yet user-friendly smart home experience.
+The SmartHouse system represents an innovative approach to home automation. This system facilitates real-time monitoring and control over various home devices and sensors, providing a sophisticated yet user-friendly smart home experience.
 
-External simulator is a mobile application.
+The SmartHouse system further enriches the user experience by adding an external simulator to the mobile application. This system feature allows users to monitor the status of all connected devices in real time and manage devices such as lights, heaters and security systems in the home through an integrated app. The app is designed to be intuitive and easy to use, making smart home management simple and convenient for everyone. By choosing SmartHouse, you're choosing a smarter, more intuitive way to manage your home's technology so that control is truly at your fingertips. 
 
 ## Workflow
 
@@ -29,31 +29,13 @@ External simulator is a mobile application.
 - **Sensor Data Collection**: Endpoints for sensors to send data.
 - **User Management**: Authentication and authorization for users to interact with the system through the UI.
 
-### Frontend (React)
-#### User Interface Components
-
-- **Dashboard**: For real-time monitoring of the smart home state, including sensor readings and ongoing actions.
-- **Event and Action Logs**: Display history and details of events and actions.
-- **Room Management**: Interfaces for users to interact with and control individual rooms and devices.
-- **Settings**: For configuring system behaviors, user preferences, and sensor thresholds.
-
-#### Interaction Flow
-
-- Utilize WebSocket or long-polling for real-time updates to the dashboard.
-- Implement Redux or Context API for state management across the React app.
-- Design responsive components for a seamless experience across devices.
-
-### Mobile Application (External Simulator)
+### Mobile UI and External Simulator
 #### Core Features
 
-- **Simple Room Control**: Allow users to simulate room interactions, such as changing temperature or simulating movement.
-- **Event Simulation**: Users can generate events to see how the system reacts in real-time.
-- **View System State**: Display current sensor values, active events, and ongoing actions.
 
 #### Workflow Integration
 
-- The mobile app communicates with the Spring Boot backend via RESTful APIs for event simulation and state viewing.
-- Utilize push notifications or a similar mechanism to update the mobile app with real-time changes in the system state.
+
 
 #### Integration and Workflow
 
@@ -61,9 +43,3 @@ External simulator is a mobile application.
 - **Event Detection and Processing**: Sensors detect changes and send data to the Monitor, which generates events into the EventPool. The Reactor watches for these events and initiates actions.
 - **Action Execution**: Actuators receive instructions from the ConsequencePool and perform actions, influencing room states.
 - **Continuous Monitoring**: The Monitor continuously tracks environmental factors using specialized sensors, adjusting system actions accordingly.
-
-#### Development Considerations
-
-- **Security**: Implement robust security measures, including HTTPS, authentication/authorization, and data encryption.
-- **Scalability**: Design the backend to efficiently handle increasing data volumes from sensors and user interactions.
-- **User Experience**: Ensure the UI is intuitive and provides immediate feedback to user actions.
