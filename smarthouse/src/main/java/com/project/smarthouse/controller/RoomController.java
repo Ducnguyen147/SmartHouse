@@ -1,5 +1,6 @@
 package com.project.smarthouse.controller;
 
+import static com.project.smarthouse.SortingHelper.*;
 import com.project.smarthouse.model.Device;
 import com.project.smarthouse.model.Room;
 import com.project.smarthouse.repository.DeviceRepository;
@@ -28,7 +29,7 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getRooms() {
-        return ResponseEntity.ok(Map.of("rooms", getSortedRooms()));
+        return ResponseEntity.ok(Map.of("data", getSortedRooms(roomRepository)));
     }
 
     // notify topics
@@ -70,16 +71,6 @@ public class RoomController {
     }
 
     private void publishToRoomsTopic() {
-        simpMessagingTemplate.convertAndSend("/topic/rooms", getSortedRooms());
-
-    }
-
-    private java.util.List<Room> getSortedRooms() {
-
-        final java.util.List<Room> rooms = roomRepository.findAll(Sort.by(Sort.Direction.ASC, "roomId"));
-        for (Room room : rooms) {
-            room.getDevices().sort((d1, d2) -> (int) (d1.getDeviceId() - d2.getDeviceId()));
-        }
-        return rooms;
+        simpMessagingTemplate.convertAndSend("/topic/rooms", getSortedRooms(roomRepository));
     }
 }

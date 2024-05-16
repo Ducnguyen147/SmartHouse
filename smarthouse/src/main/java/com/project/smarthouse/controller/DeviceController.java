@@ -13,7 +13,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import static com.project.smarthouse.SortingHelper.getSortedRooms;
 
 @RestController
 @RequestMapping("/api/devices")
@@ -32,6 +35,8 @@ public class DeviceController {
 
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @GetMapping("/{id}")
     public ResponseEntity<Device> getDeviceById(@PathVariable Long id) {
@@ -69,8 +74,12 @@ public class DeviceController {
         final Device updatedDevice = deviceRepository.save(device);
 
         actionService.evaluateSensorDataAndAct(device.getRoom().getRoomId());
-
+        publishToRoomsTopic();
         return ResponseEntity.ok(updatedDevice);
+    }
+
+    private void publishToRoomsTopic() {
+        simpMessagingTemplate.convertAndSend("/topic/rooms", getSortedRooms(roomRepository));
     }
 
 }
