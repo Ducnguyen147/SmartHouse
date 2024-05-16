@@ -36,12 +36,12 @@ Here is the complete workflow of our Smart House system:
   - **Temperature Sensor**: If the Temperature parameter is changed, this sensor will be turned on and detects the change. 
 
 - Other equipment: 
-  - **Light Bulb**: The users always have the option to turn on/ off the lightbulb by themself. For automatic action, the light bulbs are turned on if the brightness of the room is less than or equal to 90% and there is at least one person in the room. Otherwise, the light bulbs will be turned off. 
-  - **Window**:  The users always have the option to open/ close the window by themself. For automatic action, if the oxygen level is below 21% which is detected by the Oxygen Level, the windows can have an option to be automatically opened by our system. 
-  - **AC and Heater**: The users always have the option to turn on/ off the AC and Heater by themself. For automatic action, if the temperature detected by the Temperature Sensor in the room is less than 22oC then heater is turned on or if the temperature is more than 27oC then the AC is turned on. If the temperature is reached 22-27oC range, then both AC and Heaters can be turned off automatically by our system. 
-  - **Ventilation System**: The users always have the option to turn on/ off the Ventilation System by themself. For the automatic action, the Ventilation System is added specifically only for the Kitchen. It will be automatically turned on if the Stove is turned on. Regarding the Stove, there is no automatic action for this device and the users should turn on/ off the Stove by themself. 
-  - **Door Lock**: The users always have the option to lock or free the door by themself. For the automatic action, the automatic door lock has only been implemented in the living room. If no one is in the house, then the lock for this main door will automatically be activated. 
-  - **Electrical Plug**: The users always have the option to turn on/ off the electrical plug by themself. For the automatic action, the electrical plug will be automatically turned on is there is anyone in the room and be automatically turned off if everyone leaves the room. 
+  - **Light Bulb**: For automatic action, the light bulbs are turned on if the brightness of the room is less than or equal to 90% and there is at least one person in the room. Otherwise, the light bulbs will be turned off. 
+  - **Window**:  For automatic action, if the oxygen level is below 21% which is detected by the Oxygen Level, the windows can have an option to be automatically opened by our system. 
+  - **AC and Heater**: For automatic action, if the temperature detected by the Temperature Sensor in the room is less than 22oC then heater is turned on or if the temperature is more than 27oC then the AC is turned on. If the temperature is reached 22-27oC range, then both AC and Heaters can be turned off automatically by our system. 
+  - **Ventilation System**: For the automatic action, the Ventilation System is added specifically only for the Kitchen. It will be automatically turned on if the Stove is turned on. Regarding the Stove, there is no automatic action for this device and the users should turn on/ off the Stove by themself. 
+  - **Door Lock**: For the automatic action, the automatic door lock has only been implemented in the living room. If no one is in the house, then the lock for this main door will automatically be activated. 
+  - **Electrical Plug**: For the automatic action, the electrical plug will be automatically turned on is there is anyone in the room and be automatically turned off if everyone leaves the room. 
 
 #### Database Design
 
