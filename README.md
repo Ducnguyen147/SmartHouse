@@ -55,7 +55,6 @@ For our Smart House system, the entry point is those parameters that are detecte
 
 ### Mobile UI and External Simulator
 #### Mobile UI
-The original mobile repository: https://github.com/yossefEl/smarthome-elte<br/>
 The user interface of the SmartHouse app is designed to be intuitive and user-friendly, enabling users to interact with their home environment effortlessly. 
 - It allows users to: 
   - **Control Devices**: Turn devices on and off, adjust settings, and monitor their current state. 
@@ -72,5 +71,5 @@ The external simulator within the mobile app is a pivotal feature for both demon
   - **Main Repository**: [SmartHouse System](https://github.com/Ducnguyen147/SmartHouse/)
   - **Mobile UI and External Simulator Repository**: [SmartHouse Mobile App](https://github.com/yossefEl/smarthome-elte)
   This refined documentation aims to provide clear and concise information avout the SmartHouse system, ensureing easy of understanding for new users and developers.
-  - ** Detailed instructions on how to set up and run the SmartHouse application can be found here: [README.md](https://github.com/Ducnguyen147/SmartHouse/blob/main/smarthouse/README.md)
+  - Detailed instructions on how to set up and run the SmartHouse application can be found here: [README.md](https://github.com/Ducnguyen147/SmartHouse/blob/main/smarthouse/README.md)
 
