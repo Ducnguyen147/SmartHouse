@@ -1,0 +1,22 @@
+2024-03-21 22:39:30.184 CET [27482] LOG:  starting PostgreSQL 15.6 (Homebrew) on aarch64-apple-darwin23.2.0, compiled by Apple clang version 15.0.0 (clang-1500.1.0.2.5), 64-bit
+2024-03-21 22:39:30.186 CET [27482] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-03-21 22:39:30.186 CET [27482] LOG:  listening on IPv6 address "::1", port 5432
+2024-03-21 22:39:30.186 CET [27482] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-03-21 22:39:30.188 CET [27485] LOG:  database system was shut down at 2024-03-21 22:39:25 CET
+2024-03-21 22:39:30.190 CET [27482] LOG:  database system is ready to accept connections
+2024-03-21 22:39:55.802 CET [27548] FATAL:  role "postgres" does not exist
+2024-03-21 22:39:58.512 CET [27564] FATAL:  role "postgres" does not exist
+2024-03-21 22:44:30.189 CET [27483] LOG:  checkpoint starting: time
+2024-03-21 22:44:34.638 CET [27483] LOG:  checkpoint complete: wrote 47 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.448 s, sync=0.001 s, total=4.450 s; sync files=11, longest=0.001 s, average=0.001 s; distance=272 kB, estimate=272 kB
+2024-03-21 22:49:23.586 CET [29290] ERROR:  syntax error at or near "password" at character 1
+2024-03-21 22:49:23.586 CET [29290] STATEMENT:  password@123
+	password@123
+	ALTER USER group2 WITH PASSWORD 'password';
+2024-03-21 22:49:30.620 CET [27483] LOG:  checkpoint starting: time
+2024-03-21 22:51:05.860 CET [27483] LOG:  checkpoint complete: wrote 942 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=95.226 s, sync=0.011 s, total=95.241 s; sync files=304, longest=0.002 s, average=0.001 s; distance=4305 kB, estimate=4305 kB
+2024-03-25 16:31:56.732 CET [27482] LOG:  received smart shutdown request
+2024-03-25 16:31:56.743 CET [27482] LOG:  background worker "logical replication launcher" (PID 27488) exited with exit code 1
+2024-03-25 16:31:56.746 CET [27483] LOG:  shutting down
+2024-03-25 16:31:56.749 CET [27483] LOG:  checkpoint starting: shutdown immediate
+2024-03-25 16:31:56.768 CET [27483] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.011 s, sync=0.001 s, total=0.021 s; sync files=2, longest=0.001 s, average=0.001 s; distance=2 kB, estimate=3874 kB
+2024-03-25 16:31:56.807 CET [27482] LOG:  database system is shut down
