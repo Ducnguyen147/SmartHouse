@@ -11,6 +11,14 @@
 - **Create Password**:
     - `psql postgres`
     - `ALTER USER group2 WITH PASSWORD 'password';`
+- **Connect to database**:
+    - `psql -U group2 postgres`
+- **List all database**:
+    - `\l`
+- **Select the database**:
+    - `\c db_name`
+- **List all tables**:
+    - `\dt`
 - **IDE**: Depends on you choice. e.g., VS Code, Eclipse, etc.
 
 ## How to run
@@ -22,15 +30,32 @@
 ## API
 ### Room & Device
 - **Create Room & Device**: `[POST] http://localhost:8080/api/rooms`
-- Creation
 {
     "name": "Kitchen",
     "description": "50m2 kitchen space with modern equipments.",
     "brightness": 0,
     "occupancy": 0,
+    "oxygenLevel": 21,
+    "temperature": 21,
+    "livingRoom": false,
     "devices": [
         {
             "type": "BrightnessSensor",
+            "status": false,
+            "numLevel": 0
+        },
+        {
+            "type": "OccupancySensor",
+            "status": false,
+            "numLevel": 0
+        },
+        {
+            "type": "OxygenSensor",
+            "status": false,
+            "numLevel": 0
+        },
+        {
+            "type": "TemperatureSensor",
             "status": false,
             "numLevel": 0
         },
@@ -40,7 +65,32 @@
             "numLevel": 0
         },
         {
-            "type": "OccupancySensor",
+            "type": "Window",
+            "status": false,
+            "numLevel": 0
+        },
+        {
+            "type": "AC",
+            "status": false,
+            "numLevel": 0
+        },
+        {
+            "type": "Heater",
+            "status": false,
+            "numLevel": 0
+        }, 
+        {
+            "type": "Stove",
+            "status": false,
+            "numLevel": 0
+        }, 
+        {
+            "type": "VentilationSystem",
+            "status": false,
+            "numLevel": 0
+        }, 
+        {
+            "type": "ElectricPlug",
             "status": false,
             "numLevel": 0
         }
@@ -48,12 +98,21 @@
 }
 
 - **Update Room**: `[PUT] http://localhost:8080/api/rooms/1`
-- Update
 {
     "name": "Kitchen",
     "description": "50m2 kitchen space with modern equipments.",
-    "brightness": 40,
-    "occupancy": 0
+    "brightness": 75,
+    "occupancy": 2,
+    "oxygenLevel": 20,
+    "temperature": 20,
+    "livingRoom": false
+}
+
+- **Update Device**: `[PUT] http://localhost:8080/api/devices/9`
+{
+    "type": "Stove",
+    "status": true,
+    "numLevel": 2
 }
 
 ### Events && Actions
