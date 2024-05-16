@@ -56,6 +56,7 @@ Here is the complete workflow of our Smart House system:
 
 ### Mobile UI and External Simulator
 #### Mobile UI
+The original mobile repository: https://github.com/yossefEl/smarthome-elte<br/>
 The user interface of the SmartHouse app is designed to be intuitive and user-friendly, enabling users to interact with their home environment effortlessly. It allows users to: 
 Control Devices: Turn devices on and off, adjust settings, and monitor their current state. 
 Simulate Scenarios: Use the simulator to create various environmental conditions to see how the system responds. 
