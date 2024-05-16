@@ -1,2 +1,5 @@
 build:
-  app: smarthouse
+  buildpacks:
+    - heroku/java
+  config:
+    PATH: smarthouse
