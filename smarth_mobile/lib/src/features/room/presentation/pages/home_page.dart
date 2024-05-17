@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:stmart_home_elte/src/features/room/presentation/providers/simulator_provider.dart';
 import 'package:stmart_home_elte/src/shared/presentation/components/responsive_view.dart';
 import 'package:stmart_home_elte/src/shared/presentation/providers/conntectivity_providers.dart';
@@ -67,21 +68,27 @@ class _HomePageState extends ConsumerState<HomePage> {
         actions: [
           const Icon(Icons.notifications, color: AppColors.primaryColor, size: 32),
           const SizedBox(width: 16),
-          ElevatedButton(
-              style: IconButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                foregroundColor: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                ref.read(simulatorProvider.notifier).toggle();
-              },
-              // icon: const Icon(Icons.add, color: AppColors.white, size: 28),
-              child: Text(
-                ref.watch(simulatorProvider).isVisibile ? "Hide Simulator" : "Show Simulator",
-              )),
+          ResponsiveBuilder(builder: (context, sizingInformation) {
+            if (!sizingInformation.isMobile) {
+              return ElevatedButton(
+                  style: IconButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor,
+                    foregroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    ref.read(simulatorProvider.notifier).toggle();
+                  },
+                  // icon: const Icon(Icons.add, color: AppColors.white, size: 28),
+                  child: Text(
+                    ref.watch(simulatorProvider).isVisibile ? "Hide Simulator" : "Show Simulator",
+                  ));
+            }
+
+            return const SizedBox();
+          }),
           const SizedBox(width: 16),
         ],
       ),
@@ -90,17 +97,17 @@ class _HomePageState extends ConsumerState<HomePage> {
             pageController: pageController,
           ),
           tablet: Builder(builder: (context) {
-            final isVisible = ref.watch(simulatorProvider).isVisibile;
+            final simulator = ref.watch(simulatorProvider);
 
             return Row(
               children: [
                 Expanded(
                   child: MobileHomePageBody(
                     pageController: pageController,
-                    crossAxisCount: _getCrossAxisCount(isVisible, context),
+                    crossAxisCount: _getCrossAxisCount(simulator.isVisibile, context),
                   ),
                 ),
-                if (isVisible)
+                if (simulator.isVisibile)
                   SizedBox(
                     width: 400,
                     child: SimulatorView(pageController: pageController),

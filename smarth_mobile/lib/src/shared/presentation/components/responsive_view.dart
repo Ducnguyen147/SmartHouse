@@ -14,10 +14,10 @@ class ResponsiveView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ResponsiveBuilder(builder: (context, sizingInformation) {
-      if (sizingInformation.deviceScreenType == DeviceScreenType.tablet) {
-        return tablet;
+      if (sizingInformation.deviceScreenType == DeviceScreenType.mobile) {
+        return mobile;
       }
-      return mobile;
+      return tablet;
     });
   }
 }
