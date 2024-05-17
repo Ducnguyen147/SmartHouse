@@ -30,7 +30,7 @@ class SensorValueSlider extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+          Text("$title $value", style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
           Row(
             children: [
               Text("$min$valueSymbol"),

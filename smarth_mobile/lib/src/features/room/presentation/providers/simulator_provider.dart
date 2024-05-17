@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:developer' as dev;
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stmart_home_elte/src/features/room/application/room_service.dart';
 import 'package:stmart_home_elte/src/features/room/domain/entities/room_model.dart';
@@ -16,7 +15,7 @@ class SimulatorState {
   int occupancy = 0;
   int oxygenLevel = 0;
   int temperature = 0;
-  bool isVisibile = true;
+  bool isVisibile = false;
   SimulatorState();
 
   SimulatorState copyWith({
@@ -24,12 +23,14 @@ class SimulatorState {
     int? occupancy,
     int? oxygenLevel,
     int? temperature,
+    bool? isVisibile,
   }) {
     return SimulatorState()
       ..brightness = brightness ?? this.brightness
       ..occupancy = occupancy ?? this.occupancy
       ..oxygenLevel = oxygenLevel ?? this.oxygenLevel
-      ..temperature = temperature ?? this.temperature;
+      ..temperature = temperature ?? this.temperature
+      ..isVisibile = isVisibile ?? this.isVisibile;
   }
 }
 
@@ -59,11 +60,12 @@ class SimulatorNotifier extends StateNotifier<SimulatorState> {
   }
 
   void randomize() {
-    state = SimulatorState()
-      ..brightness = Random().nextInt(100)
-      ..occupancy = Random().nextInt(20)
-      ..oxygenLevel = Random().nextInt(100)
-      ..temperature = Random().nextInt(100);
+    state = state.copyWith(
+      brightness: Random().nextInt(100),
+      occupancy: Random().nextInt(100),
+      oxygenLevel: Random().nextInt(100),
+      temperature: Random().nextInt(100),
+    );
   }
 
   init({
@@ -73,11 +75,12 @@ class SimulatorNotifier extends StateNotifier<SimulatorState> {
     int? temperature,
     bool? isVisibile,
   }) {
-    state = SimulatorState()
-      ..brightness = brightness ?? 0
-      ..occupancy = occupancy ?? 0
-      ..oxygenLevel = oxygenLevel ?? 0
-      ..temperature = temperature ?? 0;
+    state = state.copyWith(
+      brightness: brightness ?? 0,
+      occupancy: occupancy ?? 0,
+      oxygenLevel: oxygenLevel ?? 0,
+      temperature: temperature ?? 0,
+    );
   }
 
   Future<void> simulate(RoomModel? room) async {
@@ -96,6 +99,7 @@ class SimulatorNotifier extends StateNotifier<SimulatorState> {
   }
 
   void toggle() {
-    // state = state.copyWith(isVisibile: !state.isVisibile);
+    state = state.copyWith(isVisibile: !state.isVisibile);
+    dev.log("isVisibile, ${state.isVisibile}");
   }
 }
