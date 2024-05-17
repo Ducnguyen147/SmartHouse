@@ -84,14 +84,14 @@ class _DeviceInfoWidgetState extends State<DeviceInfoWidget> {
             const SizedBox(height: 6),
             // "numLevel": 0,
             // yse Text
-            if (!['LightBulb', 'Stove', 'VentilationSystem', 'ElectricPlug', 'Window'].contains(widget.device.type))
-              Text(
-                'Level: ${widget.device.numLevel}',
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: _textColorByState(widget.device.status ?? false),
-                      fontSize: 16,
-                    ),
-              ),
+            // if (!['LightBulb', 'Stove', 'VentilationSystem', 'ElectricPlug', 'Window'].contains(widget.device.type))
+            //   Text(
+            //     'Level: ${widget.device.numLevel}',
+            //     style: Theme.of(context).textTheme.titleMedium!.copyWith(
+            //           color: _textColorByState(widget.device.status ?? false),
+            //           fontSize: 16,
+            //         ),
+            //   ),
             //  "status": false,
             Transform.translate(
               offset: const Offset(-4, 0),
