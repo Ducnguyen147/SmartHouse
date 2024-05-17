@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:stmart_home_elte/src/features/room/presentation/providers/simulator_provider.dart';
@@ -88,33 +89,33 @@ class _HomePageState extends ConsumerState<HomePage> {
           mobile: MobileHomePageBody(
             pageController: pageController,
           ),
-          tablet: Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: MobileHomePageBody(
-                  pageController: pageController,
-                  crossAxisCount: _getCrossAxisCount(ref.watch(simulatorProvider).isVisibile, context),
-                ),
-              ),
-              if (ref.watch(simulatorProvider).isVisibile)
+          tablet: Builder(builder: (context) {
+            final isVisible = ref.watch(simulatorProvider).isVisibile;
+
+            return Row(
+              children: [
                 Expanded(
-                  flex: 1,
-                  child: SimulatorView(pageController: pageController),
+                  child: MobileHomePageBody(
+                    pageController: pageController,
+                    crossAxisCount: _getCrossAxisCount(isVisible, context),
+                  ),
                 ),
-            ],
-          )),
+                if (isVisible)
+                  SizedBox(
+                    width: 400,
+                    child: SimulatorView(pageController: pageController),
+                  )
+              ],
+            );
+          })),
     );
   }
 
   int _getCrossAxisCount(bool isVisible, BuildContext context) {
     final bool isPortraint = MediaQuery.orientationOf(context) == Orientation.portrait;
-    if (isVisible && isPortraint) {
-      return 2;
-    } else if (isVisible && !isPortraint) {
+    if (!isVisible || (isVisible && isPortraint)) {
       return 6;
-    } else {
-      return 2;
     }
+    return 2;
   }
 }

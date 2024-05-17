@@ -74,6 +74,7 @@ public class DeviceController {
         final Device updatedDevice = deviceRepository.save(device);
 
         // actionService.evaluateSensorDataAndAct(device.getRoom().getRoomId());
+        actionService.controlRoomVentilationSystem(device.getRoom());
         publishToRoomsTopic();
         return ResponseEntity.ok(updatedDevice);
     }
