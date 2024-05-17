@@ -73,7 +73,7 @@ public class DeviceController {
         
         final Device updatedDevice = deviceRepository.save(device);
 
-        actionService.evaluateSensorDataAndAct(device.getRoom().getRoomId());
+        // actionService.evaluateSensorDataAndAct(device.getRoom().getRoomId());
         publishToRoomsTopic();
         return ResponseEntity.ok(updatedDevice);
     }
