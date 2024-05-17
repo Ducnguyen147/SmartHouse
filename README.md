@@ -56,7 +56,8 @@ For our Smart House system, the entry point is those parameters that are detecte
 ### Mobile UI and External Simulator
 #### Mobile UI
 <img width="734" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/e89226a5-1b7d-4dfb-989b-93cb45925eda">
-The user interface of the SmartHouse app is designed to be intuitive and user-friendly, enabling users to interact with their home environment effortlessly. 
+
+- The user interface of the SmartHouse app is designed to be intuitive and user-friendly, enabling users to interact with their home environment effortlessly. 
 - It allows users to: 
   - **Control Devices**: Turn devices on and off, adjust settings, and monitor their current state. 
   - **Simulate Scenarios**: Use the simulator to create various environmental conditions to see how the system responds. 
@@ -64,15 +65,22 @@ The user interface of the SmartHouse app is designed to be intuitive and user-fr
 
  <img width="760" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/ed15e29a-cb77-4d19-aafc-b4e398ba01fe">
 
+ <img width="812" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/1c982a1d-30d9-40bc-9507-d7977a5f14fb">
+
+<img width="326" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/b2ac68a5-9641-4895-8713-3e42ce3922d9">
+
 #### Simulator
 The external simulator within the mobile app is a pivotal feature for both demonstration and testing purposes. It mimics real-world changes in the environment, such as fluctuations in temperature, light, and occupancy, allowing for:
 
   - **Testing: Developers** and testers can simulate various scenarios to see how the system reacts without the need for physical setups. 
   - **User Training:** New users can familiarize themselves with the system features and functionalities in a controlled environment before applying settings to their actual devices.
 
+<img width="281" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/427864d7-cd64-4c71-b89b-6bc7f92692f2">
+
   ### Repository 
   - **Main Repository**: [SmartHouse System](https://github.com/Ducnguyen147/SmartHouse/)
   - **Mobile UI and External Simulator Repository**: [SmartHouse Mobile App](https://github.com/yossefEl/smarthome-elte)
   This refined documentation aims to provide clear and concise information avout the SmartHouse system, ensureing easy of understanding for new users and developers.
   - Detailed instructions on how to set up and run the SmartHouse application can be found here: [README.md](https://github.com/Ducnguyen147/SmartHouse/blob/main/smarthouse/README.md)
+
 
