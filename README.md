@@ -14,7 +14,6 @@ The SmartHouse system is architecturally divided into several key components, ea
 ## Workflow
 
 ### Backend (Spring Boot)
-#### Workflow
 For our Smart House system, the entry point is those parameters that are detected by sensors: 
 - **Brightness**: Detected by Brightness sensor. Basically, this parameter can be understood as environment lightness (The brightness of the room without the effects of light devices in the room in percentage) in which based on these parameters, the Light Bulb can be adjusted accordingly.  
 - **Occupancy**: Number of people in the room. 
@@ -22,7 +21,7 @@ For our Smart House system, the entry point is those parameters that are detecte
 - **Temperature**: Temperature value detected in the room 
 - By the changing of these parameters with certain effects from other devices, specific actions can be triggered for specific devices. 
   
-Here is the complete workflow of our Smart House system: 
+  #### System Workflow
 - The simulator will provide simulated value changes for these parameters. 
 - After these parameters are changed, events are created for sensors that detected those changes (E.g., Occupancy Detected, Light Detected, etc.) 
 - Based on certain events, the actions will be performed accordingly for the working equipment (not including the sensors, e.g., Switch Light, Switch Ventilation Fan, etc.). 
@@ -56,13 +55,21 @@ Here is the complete workflow of our Smart House system:
 
 ### Mobile UI and External Simulator
 #### Mobile UI
-The original mobile repository: https://github.com/yossefEl/smarthome-elte<br/>
-The user interface of the SmartHouse app is designed to be intuitive and user-friendly, enabling users to interact with their home environment effortlessly. It allows users to: 
-Control Devices: Turn devices on and off, adjust settings, and monitor their current state. 
-Simulate Scenarios: Use the simulator to create various environmental conditions to see how the system responds. 
-Receive Notifications: Get alerts about significant changes or required actions, enhancing the security and responsiveness of the system. 
-The UI is developed using React, known for its efficient updating and rendering capabilities, making it an ideal choice for dynamic and responsive app development.
+The user interface of the SmartHouse app is designed to be intuitive and user-friendly, enabling users to interact with their home environment effortlessly. 
+- It allows users to: 
+  - **Control Devices**: Turn devices on and off, adjust settings, and monitor their current state. 
+  - **Simulate Scenarios**: Use the simulator to create various environmental conditions to see how the system responds. 
+  - **Receive Notifications**: Get alerts about significant changes or required actions, enhancing the security and responsiveness of the system. 
+
 #### Simulator
-The external simulator within the mobile app is a pivotal feature for both demonstration and testing purposes. It mimics real-world changes in the environment, such as fluctuations in temperature, light, and occupancy, allowing for: 
-Testing: Developers and testers can simulate various scenarios to see how the system reacts without the need for physical setups. 
-User Training: New users can familiarize themselves with the system features and functionalities in a controlled environment before applying settings to their actual devices.
+The external simulator within the mobile app is a pivotal feature for both demonstration and testing purposes. It mimics real-world changes in the environment, such as fluctuations in temperature, light, and occupancy, allowing for:
+
+  - **Testing: Developers** and testers can simulate various scenarios to see how the system reacts without the need for physical setups. 
+  - **User Training:** New users can familiarize themselves with the system features and functionalities in a controlled environment before applying settings to their actual devices.
+
+  ### Repository 
+  - **Main Repository**: [SmartHouse System](https://github.com/Ducnguyen147/SmartHouse/)
+  - **Mobile UI and External Simulator Repository**: [SmartHouse Mobile App](https://github.com/yossefEl/smarthome-elte)
+  This refined documentation aims to provide clear and concise information avout the SmartHouse system, ensureing easy of understanding for new users and developers.
+  - Detailed instructions on how to set up and run the SmartHouse application can be found here: [README.md](https://github.com/Ducnguyen147/SmartHouse/blob/main/smarthouse/README.md)
+
