@@ -190,7 +190,9 @@ class _SimulatorViewState extends ConsumerState<SimulatorView> {
                                         ref.read(simulatorProvider.notifier).changeOccupancy(simulationState.occupancy - 1);
                                       }
                                     },
-                                    icon: const Icon(Icons.add, color: AppColors.white, size: 28)),
+                                    // q: what is the name of substrct icon in the material
+                                    // a: Icons.minus
+                                    icon: const Icon(Icons.remove, color: AppColors.white, size: 28)),
                                 const SizedBox(width: 20),
                                 Text("${simulationState.occupancy}",
                                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
