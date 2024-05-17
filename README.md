@@ -35,7 +35,7 @@ For our Smart House system, the entry point is those parameters that are detecte
   - **Temperature Sensor**: If the Temperature parameter is changed, this sensor will be turned on and detects the change. 
 
 - Other equipment: 
-  - **Light Bulb**: For automatic action, the light bulbs are turned on if the brightness of the room is less than or equal to 90% and there is at least one person in the room. Otherwise, the light bulbs will be turned off. 
+  - **Light Bulb**: For automatic action, the light bulbs are turned on if the brightness of the room is less than or equal to 90% and there is at least one person in the room. Otherwise, the light bulbs will be turned on. 
   - **Window**:  For automatic action, if the oxygen level is below 21% which is detected by the Oxygen Level, the windows can have an option to be automatically opened by our system. 
   - **AC and Heater**: For automatic action, if the temperature detected by the Temperature Sensor in the room is less than 22oC then heater is turned on or if the temperature is more than 27oC then the AC is turned on. If the temperature is reached 22-27oC range, then both AC and Heaters can be turned off automatically by our system. 
   - **Ventilation System**: For the automatic action, the Ventilation System is added specifically only for the Kitchen. It will be automatically turned on if the Stove is turned on. Regarding the Stove, there is no automatic action for this device and the users should turn on/ off the Stove by themself. 
