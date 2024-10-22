@@ -24,7 +24,7 @@ text_gen_output = api.model('TextGenerationOutput', {
     'generated_text': fields.String(description='The generated text from the model')
 })
 
-client = InferenceClient(api_key="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")  # Replace with your actual API key
+client = InferenceClient(api_key="")  # Replace with your actual API key
 
 # Define the SmartHouse context
 smart_house_context = """
