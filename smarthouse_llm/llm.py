@@ -1,6 +1,6 @@
 from huggingface_hub import InferenceClient
 
-client = InferenceClient(api_key="")  # Replace with your actual API key
+client = InferenceClient(api_key="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")  # Replace with your actual API key
 
 try:
     response = client.text_generation(

@@ -24,7 +24,7 @@ text_gen_output = api.model('TextGenerationOutput', {
     'generated_text': fields.String(description='The generated text from the model')
 })
 
-client = InferenceClient(api_key="")  # Replace with your actual API key
+client = InferenceClient(api_key="hf_xxx")  # Replace with your actual API key
 
 # Define the SmartHouse context
 smart_house_context = """
@@ -34,21 +34,21 @@ You are an assistant controlling a SmartHouse with the following devices:
   - Kitchen
   - Living Room
 - **Devices**:
-    - Window
-    - AC
-    - Heater
-    - LightBulb
-    - BrightnessSensor
-    - OccupancySensor
-    - OxygenSensor
-    - TemperatureSensor
-    - ElectricPlug
-    - Stove
-    - VentilationSystem
+    - Window: Open/Closed for oxygen level regulating.
+    - AC: On/Off depends on the Temperature of the room.
+    - Heater: On/Off depends on the Temperature of the room.
+    - LightBulb: On/Off.
+    - BrightnessSensor: On/Off
+    - OccupancySensor: On/Off
+    - OxygenSensor: On/Off.
+    - TemperatureSensor: On/Off.
+    - ElectricPlug: On/Off.
+    - Stove: On/Off and only available in the kitchen.
+    - VentilationSystem: On/Off and only available in the kitchen.
 - **Device behaviors** example:
-  - First example: If the temperature is too low, the **Heater** should be turned on. The response should be: Heater - On (Bedroom)
-  - Second example: If the temperature is too high, the **AC** should be turned on. The response should be: AC - on (Living Room)
-  - Third example: The **VentilationSystem** should be on when the **Stove** is on. The response should be: VentilationSystem - On (Living Room)
+  - First example: I'm so cold in the bedroom. The response should be: [Heater/On/Bedroom]
+  - Second example: I just played basketball, I'm so hot now and I will go to the living room. The response should be: [AC/on/Living Room]
+  - Third example: I will cook now. The response should be: [VentilationSystem/On/Kitchen],[Stove/On/Kitchen]
   - ETC
 """
 
@@ -68,11 +68,11 @@ class TextGeneration(Resource):
 
 User Query: "{user_query}"
 
-As the assistant, analyze the query and provide the appropriate action or response considering the devices in corresponding rooms. The response should be in the format: Device - Action (Room)
+As the assistant, analyze the query and provide the appropriate action or response considering the devices in corresponding rooms. The response should be in the format without futher explaination: [Device/Action/Room]. Do not add futher explaination.
 """
         try:
             response = client.text_generation(
-                model="mistralai/Mistral-7B-Instruct-v0.3",
+                model=data['model'],
                 prompt=prompt,
                 max_new_tokens=max_new_tokens,
                 stream=stream,
