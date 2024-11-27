@@ -97,6 +97,18 @@ SELECT * FROM mytable;
 DROP TABLE mytable;
 ```
 
+10. Delete all datda
+```sql
+smart_house=# DELETE FROM actions;
+DELETE 7
+smart_house=# DELETE FROM events;
+DELETE 13
+smart_house=# DELETE FROM devices;
+DELETE 33
+smart_house=# DELETE FROM rooms;
+DELETE 3
+```
+
 #### User Management
 1. List all users
 ```sql

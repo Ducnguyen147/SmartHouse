@@ -10,6 +10,7 @@ import com.project.smarthouse.repository.EventRepository;
 import com.project.smarthouse.repository.RoomRepository;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,15 @@ public class DeviceController {
         return deviceService.getDeviceById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<List<Device>> getDevicesByRoomId(@PathVariable Long roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+                
+        List<Device> devices = room.getDevices();
+        return ResponseEntity.ok(devices);
     }
 
     @PostMapping("{deviceId}/events")

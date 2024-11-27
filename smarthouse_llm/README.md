@@ -6,6 +6,8 @@ pip install flask flask_restx
 2. End point:
 ```bash
 http://localhost:5000/llm/text-generation
+http://localhost:5000/llm/rooms
+
 ```
 
 3. Request body:
@@ -17,5 +19,7 @@ http://localhost:5000/llm/text-generation
     "stream": false
 }
 ```
+. Environment variable:
+export API_KEY=xxxJIgbmpUqCCwWvNaVhOhzXtWCUXLddOrReTxxx
 
 

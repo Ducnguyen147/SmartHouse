@@ -1,4 +1,5 @@
 # pylint: disable=too-few-public-methods
+import os, requests
 from flask import Flask, request, jsonify
 from flask_restx import Api, Resource, fields
 from huggingface_hub import InferenceClient
@@ -24,8 +25,26 @@ text_gen_output = api.model('TextGenerationOutput', {
     'generated_text': fields.String(description='The generated text from the model')
 })
 
-client = InferenceClient(api_key="hf_xxx")  # Replace with your actual API key
+def parse_response(response_text):
+    # Extract the actions from between square brackets
+    actions = response_text.split("],")
+    result = []
+    
+    for action in actions:
+        # Clean up the string and split by '/'
+        clean_action = action.replace("[", "").replace("]", "").strip()
+        if clean_action:
+            device, status, room = clean_action.split("/")
+            result.append({
+                "device": device,
+                "status": status,
+                "room": room
+            })
+    
+    return result
 
+#client = InferenceClient(api_key="")  # Replace with your actual API key
+client = InferenceClient(api_key=os.getenv("API_KEY"))
 # Define the SmartHouse context
 smart_house_context = """
 You are an assistant controlling a SmartHouse with the following devices:
@@ -34,21 +53,21 @@ You are an assistant controlling a SmartHouse with the following devices:
   - Kitchen
   - Living Room
 - **Devices**:
-    - Window: Open/Closed for oxygen level regulating.
-    - AC: On/Off depends on the Temperature of the room.
-    - Heater: On/Off depends on the Temperature of the room.
-    - LightBulb: On/Off.
-    - BrightnessSensor: On/Off
-    - OccupancySensor: On/Off
-    - OxygenSensor: On/Off.
-    - TemperatureSensor: On/Off.
-    - ElectricPlug: On/Off.
-    - Stove: On/Off and only available in the kitchen.
-    - VentilationSystem: On/Off and only available in the kitchen.
+    - Window: True/False for oxygen level regulating.
+    - AC: True/False depends on the Temperature of the room.
+    - Heater: True/False depends on the Temperature of the room.
+    - LightBulb: True/False
+    - BrightnessSensor: True/False
+    - OccupancySensor: True/False
+    - OxygenSensor: True/False
+    - TemperatureSensor: True/False
+    - ElectricPlug: True/False
+    - Stove: True/False and only available in the kitchen.
+    - VentilationSystem: True/False and only available in the kitchen and bathroom.
 - **Device behaviors** example:
-  - First example: I'm so cold in the bedroom. The response should be: [Heater/On/Bedroom]
-  - Second example: I just played basketball, I'm so hot now and I will go to the living room. The response should be: [AC/on/Living Room]
-  - Third example: I will cook now. The response should be: [VentilationSystem/On/Kitchen],[Stove/On/Kitchen]
+  - First example: I'm so cold in the bedroom. The response should be: [Heater/True/Bedroom]
+  - Second example: I just played basketball, I'm so hot now and I will go to the living room. The response should be: [AC/True/Living Room]
+  - Third example: I will cook now. The response should be: [VentilationSystem/True/Kitchen],[Stove/True/Kitchen]
   - ETC
 """
 
@@ -77,9 +96,37 @@ As the assistant, analyze the query and provide the appropriate action or respon
                 max_new_tokens=max_new_tokens,
                 stream=stream,
             )
-            return {'generated_text': response}, 200
+            response_text = parse_response(response)
+            return {'generated_text': response_text}, 200
         except (ValueError, ConnectionError, TimeoutError) as e:
             ns.abort(500, f"An error occurred: {e}")
+
+room_output = api.model('RoomOutput', {
+    'rooms': fields.List(fields.Nested(api.model('Room', {
+        'roomId': fields.Integer(description='Room ID'),
+        'name': fields.String(description='Room name')
+    })))
+})
+@ns.route('/rooms')
+class Rooms(Resource):
+    """Resource for getting rooms information"""
+    @ns.marshal_with(room_output)
+    def get(self):
+        '''Get rooms from external API'''
+        try:
+            response = requests.get('http://localhost:8080/api/rooms')
+            rooms_data = response.json()
+            
+            # Extract only roomId and name
+            filtered_rooms = [
+                {'roomId': room['roomId'], 'name': room['name']} 
+                for room in rooms_data['data']
+            ]
+            
+            return {'rooms': filtered_rooms}, 200
+            
+        except requests.RequestException as e:
+            ns.abort(500, f"Failed to fetch rooms: {str(e)}")
 
 if __name__ == '__main__':
     app.run(debug=True)
