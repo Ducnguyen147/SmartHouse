@@ -8,6 +8,8 @@ import com.project.smarthouse.service.ActionService;
 import com.project.smarthouse.repository.DeviceRepository;
 import com.project.smarthouse.repository.EventRepository;
 import com.project.smarthouse.repository.RoomRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.List;
@@ -38,6 +40,8 @@ public class DeviceController {
     private EventRepository eventRepository;
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+    private static final Logger log = LoggerFactory.getLogger(DeviceController.class);
 
     @GetMapping("/{id}")
     public ResponseEntity<Device> getDeviceById(@PathVariable Long id) {
@@ -90,6 +94,7 @@ public class DeviceController {
     }
 
     private void publishToRoomsTopic() {
+        log.info("[Sockett] Device update.");
         simpMessagingTemplate.convertAndSend("/topic/rooms", getSortedRooms(roomRepository));
     }
 

@@ -11,12 +11,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomController {
+
+    private static final Logger log = LoggerFactory.getLogger(DeviceController.class);
 
     @Autowired
     private RoomRepository roomRepository;
@@ -46,7 +50,7 @@ public class RoomController {
                 deviceRepository.save(device);
             }
         }
-        publishToRoomsTopic();
+        publishToRoomsTopic("Room create!");
         return ResponseEntity.ok(savedRoom);
     }
 
@@ -65,12 +69,13 @@ public class RoomController {
         final Room updatedRoom = roomRepository.save(room);
 
         actionService.evaluateSensorDataAndAct(roomId);
-        publishToRoomsTopic();
+        publishToRoomsTopic("RoomID update!");
 
         return ResponseEntity.ok(updatedRoom);
     }
 
-    private void publishToRoomsTopic() {
+    private void publishToRoomsTopic(String topic) {
+        log.info("[Sockett] Room update. " + topic);
         simpMessagingTemplate.convertAndSend("/topic/rooms", getSortedRooms(roomRepository));
     }
 }

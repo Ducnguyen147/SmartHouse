@@ -15,52 +15,114 @@ final roomsProvider = StateNotifierProvider<RoomsNotifier, List<RoomModel>>((ref
   return RoomsNotifier(ref, roomService);
 });
 
+// class RoomsNotifier extends StateNotifier<List<RoomModel>> {
+//   final RoomService _roomService;
+//   final Ref _ref;
+//   bool isLoading = false;
+
+//   RoomsNotifier(this._ref, this._roomService) : super([]) {
+//     Future.microtask(() async {
+//       final stompClient = StompClient(
+//         config: StompConfig(
+//           url: webSocketUrl,
+//           beforeConnect: () async {
+//             log('Trying to connect to the server');
+//           },
+//         ),
+//       );
+
+//       stompClient.activate();
+//       await Future.delayed(const Duration(seconds: 3));
+
+//       if (stompClient.connected) {
+//         log('Connected to the server');
+//         stompClient.subscribe(
+//             destination: '/topic/rooms',
+//             callback: (frame) {
+//               // log('Received message: ${frame.body.toString()}');
+//               // final body = jsonDecode(frame.body.toString());
+//               // log('Received message: $body');
+//               final jsonResp = jsonDecode(frame.body.toString());
+//               List<RoomModel> rms = [];
+//               try {
+//                 rms = jsonResp.map<RoomModel>((e) => RoomModel.fromJson(e)).toList();
+//               } catch (e) {
+//                 log("error from jsonDecode: $e", name: 'RoomsNotifier.subscribe');
+//               }
+//               state = rms;
+//               log("State changed through websocket");
+//             });
+//       } else {
+//         log('Not connected to the server');
+//       }
+//     });
+//   }
+
+//   Future<void> get() async {
+//     state = await _roomService.getRooms();
+//     log(state.toString());
+//   }
+// }
+
 class RoomsNotifier extends StateNotifier<List<RoomModel>> {
   final RoomService _roomService;
   final Ref _ref;
   bool isLoading = false;
+  StompClient? stompClient;
 
   RoomsNotifier(this._ref, this._roomService) : super([]) {
-    Future.microtask(() async {
-      final stompClient = StompClient(
-        config: StompConfig(
-          url: webSocketUrl,
-          beforeConnect: () async {
-            log('Trying to connect to the server');
-          },
-        ),
-      );
+    _initializeStompClient();
+  }
 
-      stompClient.activate();
-      await Future.delayed(const Duration(seconds: 3));
+  void _initializeStompClient() {
+    stompClient = StompClient(
+      config: StompConfig(
+        url: webSocketUrl,
+        onConnect: _onStompConnected,
+        beforeConnect: () async {
+          log('Trying to connect to the server');
+        },
+        onStompError: (StompFrame frame) {
+          log('STOMP Error: ${frame.body}');
+        },
+        onWebSocketError: (dynamic error) {
+          log('WebSocket Error: $error');
+        },
+      ),
+    );
 
-      if (stompClient.connected) {
-        log('Connected to the server');
-        stompClient.subscribe(
-            destination: '/topic/rooms',
-            callback: (frame) {
-              // log('Received message: ${frame.body.toString()}');
-              // final body = jsonDecode(frame.body.toString());
-              // log('Received message: $body');
-              final jsonResp = jsonDecode(frame.body.toString());
-              List<RoomModel> rms = [];
-              try {
-                rms = jsonResp.map<RoomModel>((e) => RoomModel.fromJson(e)).toList();
-              } catch (e) {
-                log("error from jsonDecode: $e", name: 'RoomsNotifier.subscribe');
-              }
-              state = rms;
-              log("State changed through websocket");
-            });
-      } else {
-        log('Not connected to the server');
-      }
-    });
+    stompClient!.activate();
+  }
+
+  void _onStompConnected(StompFrame frame) {
+    log('Connected to the server');
+
+    stompClient!.subscribe(
+      destination: '/topic/rooms',
+      callback: (StompFrame frame) {
+        log('Received message: ${frame.body.toString()}');
+        final jsonResp = jsonDecode(frame.body.toString());
+        List<RoomModel> rms = [];
+        try {
+          rms = jsonResp.map<RoomModel>((e) => RoomModel.fromJson(e)).toList();
+        } catch (e) {
+          log("Error from jsonDecode: $e", name: 'RoomsNotifier.subscribe');
+        }
+        state = rms;
+        log("State changed through WebSocket");
+      },
+    );
   }
 
   Future<void> get() async {
     state = await _roomService.getRooms();
     log(state.toString());
+  }
+
+  @override
+  void dispose() {
+    stompClient?.deactivate();
+    super.dispose();
   }
 }
 
