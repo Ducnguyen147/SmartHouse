@@ -32,7 +32,7 @@ def parse_response(response_text):
     
     for action in actions:
         # Clean up the string and split by '/'
-        clean_action = action.replace("[", "").replace("]", "").strip()
+        clean_action = action.replace("[", "").replace("]", "").replace("Response:","").strip()
         if clean_action:
             device, status, room = clean_action.split("/")
             result.append({
@@ -52,22 +52,25 @@ You are an assistant controlling a SmartHouse with the following devices:
   - Bedroom
   - Kitchen
   - Living Room
+  - Bathroom
 - **Devices**:
-    - Window: True/False for oxygen level regulating.
-    - AC: True/False depends on the Temperature of the room.
-    - Heater: True/False depends on the Temperature of the room.
-    - LightBulb: True/False
-    - BrightnessSensor: True/False
-    - OccupancySensor: True/False
-    - OxygenSensor: True/False
-    - TemperatureSensor: True/False
-    - ElectricPlug: True/False
-    - Stove: True/False and only available in the kitchen.
-    - VentilationSystem: True/False and only available in the kitchen and bathroom.
-- **Device behaviors** example:
-  - First example: I'm so cold in the bedroom. The response should be: [Heater/True/Bedroom]
-  - Second example: I just played basketball, I'm so hot now and I will go to the living room. The response should be: [AC/True/Living Room]
-  - Third example: I will cook now. The response should be: [VentilationSystem/True/Kitchen],[Stove/True/Kitchen]
+    - Window (Bedroom, Kitchen, Living Room, Bathroom): True/False for oxygen level regulating. If the room is lacking oxygen, the window should be opened.
+    - AC (Bedroom, Kitchen, Living Room): True/False depends on the Temperature of the room. If the temperature is too hot, the AC should be turned on.
+    - Heater (Bedroom, Kitchen, Living Room, Bathroom): True/False depends on the Temperature of the room. If the temperature is too cold, then the heater should be turned on.
+    - LightBulb (Bedroom, Kitchen, Living Room, Bathroom): True/False. If the room is dark, the lightbulb should be turned on, if no one is in the room, it should be turned off.
+    - BrightnessSensor (Bedroom, Kitchen, Living Room, Bathroom): True/False. To detect brightness in the room.
+    - OccupancySensor (Bedroom, Kitchen, Living Room, Bathroom): True/False. To detect people in the room.
+    - OxygenSensor (Bedroom, Kitchen, Living Room, Bathroom): True/False. To detect oxygen level.
+    - TemperatureSensor (Bedroom, Kitchen, Living Room, Bathroom): True/False. To detect the room temperature.
+    - ElectricPlug (Bedroom, Kitchen, Living Room, Bathroom): True/False
+    - Stove (Kitchen): True/False and only available in the kitchen. The stove will be turned on if someone is about to cook.
+    - VentilationSystem (Kitchen, Bathroom): True/False and only available in the kitchen and bathroom. It will be turned on if people cook in the kitchen or take a shower/ go to toilet in the bathroom.
+- **Device behaviors**:
+  - Remember if there is any change in brightness, occupancy, oxygen, temperature; you need to turn on the according sensors.
+  - If no one is at home, remember to turn off all lightbulbs at home.
+  - First example: I'm so cold in the bedroom. The response should be: [TemperatureSensor/True/Bedroom], [Heater/True/Bedroom]
+  - Second example: I just played basketball, I'm so hot now and I will go to the living room. The response should be: [TemperatureSensor/True/Living Room], [AC/True/Living Room]
+  - Third example: I will cook now. The response should be: [OccupancySensor/True/Kitchen], [Lightbulb/True/Kitchen], [VentilationSystem/True/Kitchen],[Stove/True/Kitchen], [Window/True/Kitchen]
   - ETC
 """
 
