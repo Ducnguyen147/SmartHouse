@@ -93,15 +93,49 @@ User Query: "{user_query}"
 As the assistant, analyze the query and provide the appropriate action or response considering the devices in corresponding rooms. The response should be in the format without futher explaination: [Device/Action/Room]. Do not add futher explaination.
 """
         try:
+            # Generate text using the LLM
             response = client.text_generation(
                 model=data['model'],
                 prompt=prompt,
                 max_new_tokens=max_new_tokens,
                 stream=stream,
             )
-            response_text = parse_response(response)
-            return {'generated_text': response_text}, 200
-        except (ValueError, ConnectionError, TimeoutError) as e:
+            # Parse the response
+            actions = parse_response(response)
+
+            # Fetch all rooms and their devices
+            rooms_response = requests.get('http://localhost:8080/api/rooms')
+            rooms_data = rooms_response.json()
+            rooms = rooms_data['data']
+
+            # Create a room map with room names as keys
+            room_map = {room['name'].lower(): room for room in rooms}
+
+            # Helper function to normalize device type
+            def normalize_device_type(device_type):
+                return device_type.lower().replace(" ", "")
+
+            # Iterate over actions and update the device states
+            for action in actions:
+                room_name = action['room'].lower()
+                device_type = normalize_device_type(action['device'])
+                status = action['status'].lower() == 'true'
+
+                if room_name in room_map:
+                    room = room_map[room_name]
+                    for device in room['devices']:
+                        if normalize_device_type(device['type']) == device_type:
+                            device_id = device['deviceId']
+                            # Update the device status via PUT request
+                            update_payload = {
+                                "type": device['type'],
+                                "status": status,
+                                "numLevel": device.get('numLevel', 0)
+                            }
+                            requests.put(f'http://localhost:8080/api/devices/{device_id}', json=update_payload)
+
+            return {'generated_text': actions}, 200
+        except (ValueError, ConnectionError, TimeoutError, requests.RequestException) as e:
             ns.abort(500, f"An error occurred: {e}")
 
 room_output = api.model('RoomOutput', {

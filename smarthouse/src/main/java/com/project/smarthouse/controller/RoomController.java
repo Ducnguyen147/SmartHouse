@@ -73,6 +73,7 @@ public class RoomController {
 
         return ResponseEntity.ok(updatedRoom);
     }
+    
 
     private void publishToRoomsTopic(String topic) {
         log.info("[Sockett] Room update. " + topic);
