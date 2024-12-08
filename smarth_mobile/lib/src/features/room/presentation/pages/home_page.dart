@@ -53,7 +53,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Youssef', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Duc', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 Text(
                   'Welcome back,',
                   style: TextStyle(
