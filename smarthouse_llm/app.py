@@ -64,7 +64,7 @@ You are an assistant controlling a SmartHouse with the following devices:
     - TemperatureSensor (Bedroom, Kitchen, Living Room, Bathroom): True/False. To detect the room temperature.
     - ElectricPlug (Bedroom, Kitchen, Living Room, Bathroom): True/False
     - Stove (Kitchen): True/False and only available in the kitchen. The stove will be turned on if someone is about to cook.
-    - VentilationSystem (Kitchen, Bathroom): True/False and only available in the kitchen and bathroom. It will be turned on if people cook in the kitchen or take a shower/ go to toilet in the bathroom.
+    - VentilationSystem (Kitchen): True/False and only available in the kitchen. It will be turned on if people cook in the kitchen.
 - **Device behaviors**:
   - Remember if there is any change in brightness, occupancy, oxygen, temperature; you need to turn on the according sensors.
   - If no one is at home, remember to turn off all lightbulbs at home.
@@ -109,7 +109,7 @@ As the assistant, analyze the query and provide the appropriate action or respon
             rooms = rooms_data['data']
 
             # Create a room map with room names as keys
-            room_map = {room['name'].lower(): room for room in rooms}
+            room_map = {room['name'].lower().replace(" ",""): room for room in rooms}
 
             # Helper function to normalize device type
             def normalize_device_type(device_type):
@@ -117,7 +117,7 @@ As the assistant, analyze the query and provide the appropriate action or respon
 
             # Iterate over actions and update the device states
             for action in actions:
-                room_name = action['room'].lower()
+                room_name = action['room'].lower().replace(" ","")
                 device_type = normalize_device_type(action['device'])
                 status = action['status'].lower() == 'true'
 
