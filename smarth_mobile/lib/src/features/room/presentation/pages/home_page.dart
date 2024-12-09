@@ -79,22 +79,23 @@ class _HomePageState extends ConsumerState<HomePage> {
           ResponsiveBuilder(builder: (context, sizingInformation) {
             if (!sizingInformation.isMobile) {
               return ElevatedButton(
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.primaryColor,
-                    foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                style: IconButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  foregroundColor: AppColors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: () {
-                    ref.read(simulatorProvider.notifier).toggle();
-                  },
-                  // icon: const Icon(Icons.add, color: AppColors.white, size: 28),
-                  child: Text(
-                    ref.watch(simulatorProvider).isVisibile
-                        ? "Hide Simulator"
-                        : "Show Simulator",
-                  ));
+                ),
+                onPressed: () {
+                  ref.read(simulatorProvider.notifier).toggle();
+                },
+                // icon: const Icon(Icons.add, color: AppColors.white, size: 28),
+                child: Text(
+                  ref.watch(simulatorProvider).isVisibile
+                      ? "Hide Simulator"
+                      : "Show Simulator",
+                ),
+              );
             }
 
             return const SizedBox();
@@ -109,7 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           tablet: Builder(builder: (context) {
             final simulator = ref.watch(simulatorProvider);
 
-            return Row(
+            return (Row(
               children: [
                 Expanded(
                   child: MobileHomePageBody(
@@ -118,20 +119,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                         _getCrossAxisCount(simulator.isVisibile, context),
                   ),
                 ),
-                SizedBox(
-                  width: 400,
-                  height: 500,
-                  child: IframeScreen(
-                      // Embedding the chatbot
-                      pageController: pageController),
-                ),
                 if (simulator.isVisibile)
                   SizedBox(
                     width: 400,
                     child: SimulatorView(pageController: pageController),
-                  )
+                  ),
+                SizedBox(
+                  width: 400,
+                  height: 600,
+                  child: IframeScreen(
+                      // Embedding the chatbot
+                      pageController: pageController),
+                )
               ],
-            );
+            ));
           })),
     );
   }
