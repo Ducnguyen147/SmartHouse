@@ -1,0 +1,39 @@
+.rcw-widget-container {
+    margin: 0 1% 1% 0;
+}
+div [id = "rcw-conversation-container"]{
+    min-width: 290px;
+}
+div [class = "rcw-message rcw-message-client"]{
+    margin: 0 10px;
+}
+.rcw-response .rcw-message-text {
+    padding: 10px 15px !important;
+    color: #262727 ;
+}
+.rcw-client .rcw-message-text{
+    padding: 10px 15px !important;
+}
+.rcw-conversation-container .rcw-header{
+    padding: 2px 0 8px;
+}
+.rcw-timestamp {
+    margin: 4px 5px 0 5px;
+}
+.btn-style{
+    width: 61px;
+    height: 61px;
+    background: transparent;
+    border: none;
+    position: fixed;
+    right: 1%;
+    bottom: 2%;
+    z-index: 10000;
+    cursor: pointer;
+}
+.rcw-widget-container{
+    margin: 0 1% 1% 0;
+}
+.rcw-launcher{
+    margin: 10px 0 0 0;
+}
