@@ -13,9 +13,9 @@ http://localhost:5000/llm/rooms
 3. Request body:
 ```json
 {
-    "model": "mistralai/Mistral-Nemo-Base-2407",
-    "user_query": "I need to sleep now",
-    "max_new_tokens": 200,
+    "model": "mistralai/Mistral-7B-Instruct-v0.3",
+    "user_query": "I'm going to sleep now.",
+    "max_new_tokens": 1000,
     "stream": false
 }
 ```
