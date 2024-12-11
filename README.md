@@ -4,14 +4,23 @@
 
 The SmartHouse system represents an innovative approach to home automation. This system facilitates real-time monitoring and control over various home devices and sensors, providing a sophisticated yet user-friendly smart home experience.
 
-The SmartHouse system further enriches the user experience by adding an external simulator to the mobile application. This system feature allows users to monitor the status of all connected devices in real time and manage devices such as lights, heaters and security systems in the home through an integrated app. The app is designed to be intuitive and easy to use, making smart home management simple and convenient for everyone. By choosing SmartHouse, you're choosing a smarter, more intuitive way to manage your home's technology so that control is truly at your fingertips. 
+The SmartHouse system further enriches the user experience by adding an external simulator to the mobile application. This system feature allows users to monitor the status of all connected devices in real time and manage devices such as lights, heaters and security systems in the home through an integrated app. The app is designed to be intuitive and easy to use, making smart home management simple and convenient for everyone. By choosing SmartHouse, you're choosing a smarter, more intuitive way to manage your home's technology so that control is truly at your fingertips.
+
+Our application introduces a cutting-edge AI-driven solution that enables seamless interaction with the SmartHouse system using natural human language. Unlike traditional methods that require manual adjustments or waiting for automated changes triggered by sensors, our system revolutionizes home automation by allowing users to control devices effortlessly through voice commands. For instance, instead of manually turning off a light or adjusting a thermostat, you can simply say, 'Please turn off the light in the kitchen,' or 'I'm going to take a shower now in the bathroom,' and the system will promptly respond to your request. This intuitive interaction not only enhances convenience but also makes the system more accessible to individuals of all ages and technical abilities. Whether you're managing your daily routine or creating a more comfortable living environment, our SmartHouse AI ensures that your home adapts to your needs with minimal effort, providing a truly intelligent and personalized living experience
 
 ## High-level architecture
 
 The SmartHouse system is architecturally divided into several key components, each responsible for different aspects of the system’s functionality. These components include the mobile UI, the backend services, the database, and the external simulator. The system is built on a microservices architecture to ensure scalability and resilience. Each service communicates through well-defined APIs, allowing for efficient data exchange and processing.
-<img width="850" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/f01eeeb2-fc0e-464d-ab4f-97f440d5db5d">
+<img width="1145" alt="image" src="https://github.com/user-attachments/assets/a34920ac-fee4-46f4-b5fb-558afb261c47">
 
 ## Workflow
+
+### AI solution (Mistral instruct v3 model from Huggingface)
+Our AI solution leverages the advanced capabilities of the Mistral Instruct v3 model, a state-of-the-art natural language processing tool. This model enables seamless communication between users and the SmartHouse system through intuitive, human-like language understanding. By interpreting voice commands and contextual cues, the AI orchestrates complex actions across multiple devices, ensuring a personalized and efficient home automation experience.
+Key Features of the AI Solution:
+- **Natural Language Processing**: The AI can comprehend and execute commands like "Turn off the lights in the living room" or "SIt is too hot in bedroom" making interactions effortless.
+- **Real-Time Decision Making**: The AI processes data from users instantly to make decisions, ensuring convenience and smooth user experience.
+The integration of this AI model transforms the SmartHouse system into an intelligent, adaptive, and user-centric environment, setting a new standard in home automation.
 
 ### Backend (Spring Boot)
 For our Smart House system, the entry point is those parameters that are detected by sensors: 
