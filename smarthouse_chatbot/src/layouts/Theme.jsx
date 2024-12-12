@@ -4,16 +4,16 @@ import { ThemeProvider } from 'styled-components';
 
 // all available props
 const theme = {
-    background: '#f5f8fb',
+    background: 'transparent', // was #f5f8fb, now transparent
     fontFamily: 'Helvetica Neue',
-    headerBgColor: '#0028ef',
+    headerBgColor: '#223245',
     headerFontColor: '#fff',
     headerFontSize: '15px',
-    botBubbleColor: '#0028ef',
+    botBubbleColor: '#223245',
     botFontColor: '#fff',
     userBubbleColor: '#fff',
-    userFontColor: '#4a4a4a',
-};
+    userFontColor: '#223245',
+  };
 
 
 const ThemedExample = ({children}) => (

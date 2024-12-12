@@ -6,7 +6,7 @@ import '../styles/widget.css';
 const Chatbot = () => {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
-    const [color, setColor] = useState('#161617');
+    const [color, setColor] = useState('#223245');
     const timeoutIds = useRef([])
     const times = useRef(0)
 
@@ -30,7 +30,7 @@ const Chatbot = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(
                 {
-                    model: "mistralai/Mistral-7B-Instruct-v0.2",
+                    model: "mistralai/Mistral-7B-Instruct-v0.3",
                     user_query: message,
                     max_new_tokens: 1000,
                     stream: false
@@ -40,12 +40,37 @@ const Chatbot = () => {
 
         let responseString= response?.generated_text?.toString();
 
-        setResponseParts( ()=> (responseString !== undefined  && responseString.length >0)
-            ? responseString.split(' ') : "How can I help you".split(' '))
+        let validJsonString = responseString.replace(/'/g, '"');
+
+        let data;
+        try {
+        data = JSON.parse(validJsonString);
+        } catch (err) {
+        console.error("Invalid JSON format in response:", err);
+        data = [];
+        }
+
+        // 2. Transform each device into a human-readable phrase.
+        //    - Convert "True" to "has been turned on" or "False" to "has been turned off".
+        //    - Use the device and room information in a sentence.
+
+        function humanizeStatus(device, status, room) {
+        let isOn = status.toLowerCase() === "true";
+        let action = isOn ? "has been turned on" : "has been turned off";
+        return `The ${device} in ${room} ${action}`;
+        }
+
+        // 3. Map over all devices and create a combined sentence.
+        const transformedResponse = data.map(item => {
+        return humanizeStatus(item.device, item.status, item.room);
+        }).join('\n ');
+
+        setResponseParts( ()=> (transformedResponse !== undefined  && transformedResponse.length >0)
+            ? transformedResponse.split(' ') : "How can I help you".split(' '))
 console.log("in get func "+responseParts)
 if(color === 'black'){
     toggleMsgLoader();
-    addResponseMessage(responseString);
+    addResponseMessage(transformedResponse);
     setColor('#161617')
 }
         setIsTyping(false);
@@ -55,7 +80,7 @@ if(color === 'black'){
         console.log("responseParts in use effect "+ responseParts)
         const fetchData = async () => {
             const data = await someAsyncFunction(); // Simulate async work
-            if(times.current != 0) {
+            if(times.current !== 0) {
 
                 Promise.all(data).then(value => {
                        // toggleMsgLoader();

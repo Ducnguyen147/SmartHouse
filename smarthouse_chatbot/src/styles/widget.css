@@ -1,11 +1,20 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+  }
+  
+  /* Ensure widget containers do not have unwanted backgrounds or margins */
+  .rcw-widget-container, .rcw-conversation-container {
+    background: transparent !important;
+  }
+
 .rcw-widget-container {
-    margin: 0 1% 1% 0;
+    margin: 0 1% 100% 0;
 }
-div [id = "rcw-conversation-container"]{
-    min-width: 290px;
-}
+
 div [class = "rcw-message rcw-message-client"]{
-    margin: 0 10px;
+    margin: 0 0px;
 }
 .rcw-response .rcw-message-text {
     padding: 10px 15px !important;
@@ -15,7 +24,7 @@ div [class = "rcw-message rcw-message-client"]{
     padding: 10px 15px !important;
 }
 .rcw-conversation-container .rcw-header{
-    padding: 2px 0 8px;
+    padding: 15px 0 1px;
 }
 .rcw-timestamp {
     margin: 4px 5px 0 5px;
@@ -37,3 +46,19 @@ div [class = "rcw-message rcw-message-client"]{
 .rcw-launcher{
     margin: 10px 0 0 0;
 }
+
+/* Remove extra margins/padding to let the bubble sit at the bottom right with no big white area */
+.rcw-launcher {
+    margin: 0 !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    background: #223245 !important; /* or your desired bubble color */
+  }
+  
+  /* Ensure no outer containers add whitespace */
+  .rcw-widget-container,
+  .rcw-conversation-container,
+  .rcw-messages-container {
+    background: transparent !important;
+    box-shadow: none !important;
+  }

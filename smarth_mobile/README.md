@@ -9,6 +9,8 @@ Run in web:
 - Download Google Chrome
 - cd smarth_mobile
 - flutter run -d chrome
+OR
+- flutter run -d chrome --web-renderer html
 
 This project is a starting point for a Flutter application.
 
