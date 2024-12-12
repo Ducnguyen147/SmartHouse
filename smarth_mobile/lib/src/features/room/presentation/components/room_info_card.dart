@@ -16,13 +16,13 @@ class RoomInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log("new val : ${room.name}");
-    final infos = [
-      _buildRoomInfo(context, 'Brightness: ${room.brightness}%', FluentIcons.brightness_low_48_regular, AppColors.palYellow),
-      _buildRoomInfo(context, 'Temperature: ${room.temperature}°C', FluentIcons.temperature_24_regular, AppColors.palRed),
-      _buildRoomInfo(context, 'Occupancy: ${room.occupancy}', FluentIcons.people_20_regular, AppColors.palGreen),
-      _buildRoomInfo(
-          context, 'Oxygen Level: ${room.oxygenLevel}%', FluentIcons.table_freeze_column_16_filled, AppColors.primaryColor),
-    ];
+    // final infos = [
+    //   _buildRoomInfo(context, 'Brightness: ${room.brightness}%', FluentIcons.brightness_low_48_regular, AppColors.palYellow),
+    //   _buildRoomInfo(context, 'Temperature: ${room.temperature}°C', FluentIcons.temperature_24_regular, AppColors.palRed),
+    //   _buildRoomInfo(context, 'Occupancy: ${room.occupancy}', FluentIcons.people_20_regular, AppColors.palGreen),
+    //   _buildRoomInfo(
+    //       context, 'Oxygen Level: ${room.oxygenLevel}%', FluentIcons.table_freeze_column_16_filled, AppColors.primaryColor),
+    // ];
     return ResponsiveBuilder(builder: (context, sizingInformation) {
       return Container(
         padding: const EdgeInsets.all(16),
@@ -48,10 +48,10 @@ class RoomInfoCard extends StatelessWidget {
                   fontSize: 16), // const TextStyle(fontSize: 16, color: AppColors.text),
             ),
             const SizedBox(height: 4),
-            if (sizingInformation.isMobile)
-              ...infos
-            else
-              StaggeredGrid.count(crossAxisCount: 2, children: infos.map((e) => e).toList())
+            // if (sizingInformation.isMobile)
+            //   ...infos
+            // else
+            //   StaggeredGrid.count(crossAxisCount: 2, children: infos.map((e) => e).toList())
           ],
         ),
       );
