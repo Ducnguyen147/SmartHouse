@@ -57,7 +57,7 @@ You are an assistant controlling a SmartHouse with the following devices:
   - Bathroom
 - **Devices**:
     - Window (Bedroom, Kitchen, Living Room, Bathroom): True/False for oxygen level regulating. If the room is lacking oxygen, the window should be opened.
-    - AC (Bedroom, Kitchen, Living Room): True/False depends on the Temperature of the room. If the temperature is too hot, the AC should be turned on.
+    - AC (Bedroom, Kitchen, Living Room, Bathroom): True/False depends on the Temperature of the room. If the temperature is too hot, the AC should be turned on.
     - Heater (Bedroom, Kitchen, Living Room, Bathroom): True/False depends on the Temperature of the room. If the temperature is too cold, then the heater should be turned on.
     - LightBulb (Bedroom, Kitchen, Living Room, Bathroom): True/False. If the room is dark, the lightbulb should be turned on, if no one is in the room, it should be turned off.
     - BrightnessSensor (Bedroom, Kitchen, Living Room, Bathroom): True/False. To detect brightness in the room.
