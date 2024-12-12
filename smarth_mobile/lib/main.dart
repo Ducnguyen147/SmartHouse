@@ -25,3 +25,29 @@ class SmartHomeApp extends StatelessWidget {
     );
   }
 }
+// void main() async {
+//   const String socketUrl =
+//       'ws://localhost:8080/gs-guide-websocket'; // Change IP if needed
+
+//   try {
+//     final WebSocket socket = WebSocket(socketUrl);
+//     socket.onOpen.listen((event) {
+//       print('Connected to $socketUrl');
+//       socket.send('Hello, WebSocket!');
+//     });
+
+//     socket.onMessage.listen((MessageEvent event) {
+//       print('Received: ${event.data}');
+//     });
+
+//     socket.onError.listen((event) {
+//       print('Error: $event');
+//     });
+
+//     socket.onClose.listen((event) {
+//       print('Connection closed.');
+//     });
+//   } catch (e) {
+//     print('Failed to connect: $e');
+//   }
+// }

@@ -86,6 +86,10 @@ The external simulator within the mobile app is a pivotal feature for both demon
 
 <img width="281" alt="image" src="https://github.com/Ducnguyen147/SmartHouse/assets/102163508/427864d7-cd64-4c71-b89b-6bc7f92692f2">
 
+#### AI chat bot
+<img width="390" alt="image" src="https://github.com/user-attachments/assets/84e3dbe6-690b-47e9-a3d5-10eeb29b4a60" />
+
+
   ### Repository 
   - **Main Repository**: [SmartHouse System](https://github.com/Ducnguyen147/SmartHouse/)
   - **Mobile UI and External Simulator Repository**: [SmartHouse Mobile App](https://github.com/yossefEl/smarthome-elte)
