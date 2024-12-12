@@ -111,9 +111,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           tablet: Builder(builder: (context) {
             final simulator = ref.watch(simulatorProvider);
-
-            return (Row(
-              children: [
+            return Stack(children: [
+              (Row(children: [
                 Expanded(
                   child: MobileHomePageBody(
                     pageController: pageController,
@@ -126,15 +125,15 @@ class _HomePageState extends ConsumerState<HomePage> {
                     width: 400,
                     child: SimulatorView(pageController: pageController),
                   ),
-                SizedBox(
-                  width: 400,
-                  height: 600,
-                  child: IframeScreen(
-                      // Embedding the chatbot
-                      pageController: pageController),
-                )
-              ],
-            ));
+              ])),
+              Positioned(
+                right: 15,
+                bottom: 15,
+                child: SizedBox(
+                  child: IframeScreen(pageController: pageController),
+                ),
+              ),
+            ]);
           })),
     );
   }

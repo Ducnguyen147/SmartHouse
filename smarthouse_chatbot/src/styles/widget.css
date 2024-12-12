@@ -1,8 +1,18 @@
 .rcw-widget-container {
     margin: 0 1% 1% 0;
 }
-div [id = "rcw-conversation-container"]{
+div [id = "rcw-conversation-container"]{ 
     min-width: 290px;
+    margin: 2% 15% 1% ;
+    border-radius: 4px;
+    /* position: absolute; */
+}
+.rcw-launcher{
+    margin: 1% 20px 1%;
+}
+.rcw-conversation-container.active{
+    /* position: absolute;
+    min-width: 290px; */
 }
 div [class = "rcw-message rcw-message-client"]{
     margin: 0 10px;
@@ -21,19 +31,35 @@ div [class = "rcw-message rcw-message-client"]{
     margin: 4px 5px 0 5px;
 }
 .btn-style{
-    width: 61px;
-    height: 61px;
+    width: 59px;
+    height: 59px;
     background: transparent;
-    border: none;
+    border: transparent;
     position: fixed;
     right: 1%;
     bottom: 2%;
     z-index: 10000;
     cursor: pointer;
+    
+}
+.btn-style-close{
+    width: 57px;
+    height: 57px;
+    border-radius: 50%;
+    background: #35cce6 !important;
+    right: 15px !important;
+    bottom: 1% !important;
+    z-index: 10000;
+    cursor: pointer;
+    position: fixed;
+    box-shadow: 0 0 7px #716e6e;
+    border: none;
+    outline: none;
 }
 .rcw-widget-container{
     margin: 0 1% 1% 0;
 }
-.rcw-launcher{
+/* .rcw-launcher{
     margin: 10px 0 0 0;
-}
+    position: fixed;
+} */
